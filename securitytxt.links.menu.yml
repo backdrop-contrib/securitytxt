@@ -1,0 +1,6 @@
+entity.securitytxt.form:
+  title: 'Security.txt'
+  parent: system.admin_config_system
+  description: 'Configure site security.txt file.'
+  route_name: entity.securitytxt.form
+  weight: 50

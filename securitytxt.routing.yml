@@ -1,0 +1,14 @@
+entity.securitytxt.form:
+  path: '/admin/config/system/securitytxt'
+  defaults:
+    _form: '\Drupal\securitytxt\Form\SecuritytxtForm'
+    _title: 'Security.txt configuration'
+  requirements:
+    _permission: 'administer securitytxt'
+
+entity.securitytxt.securitytxt_file:
+  path: '/.well-known/security.txt'
+  defaults:
+    _controller: '\Drupal\securitytxt\Controller\SecuritytxtController::securitytxtFile'
+  requirements:
+    _permission: 'access content'
