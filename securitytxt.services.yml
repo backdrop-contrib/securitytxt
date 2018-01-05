@@ -1,0 +1,3 @@
+services:
+  securitytxt.service:
+    class: Drupal\securitytxt\SecuritytxtService

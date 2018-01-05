@@ -1,0 +1,16 @@
+#+TITLE: Security.txt Module README
+#+AUTHOR: Daniel J. R. May
+#+BEGIN_COMMENT
+This is an emacs org-mode text file. You can convert it to a
+pretty-printed text file called INSTALLATION when in org-mode by
+issuing the command: C-c C-e t u
+#+END_COMMENT
+
+* Introduction
+The Security.txt module provides an implementation of the security.txt
+draft RFC standard. It’s purpose is to provide a standardised way to
+document your website’s security contact details and policy. This
+allows users and security researchers to securely disclose security
+vulnerabilities to you.
+
+You can learn more from the [[https://securitytxt.org][security.txt website]] and [[https://tools.ietf.org/html/draft-foudil-securitytxt-02][draft RFC]].
