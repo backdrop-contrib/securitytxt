@@ -2,7 +2,9 @@
 
 /**
  * @file
- * Implementation of the security.txt standard for drupal.
+ * Module which implements the security.txt standard for drupal.
+ *
+ * @see https://securitytxt.org/
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;

@@ -16,6 +16,7 @@ class SecuritytxtPermissionsTest extends BrowserTestBase {
      * Modules to enable.
      *
      * @var array
+     *  Modules which should be enabled by default.
      */
     public static $modules = ['node', 'securitytxt'];
 
@@ -68,7 +69,7 @@ class SecuritytxtPermissionsTest extends BrowserTestBase {
         $this->drupalGet('.well-known/security.txt.sig');
         $this->assertResponse(404, 'File Not Found for Authenticated user with "view securitytxt" to security.txt.sig page.');
         $this->drupalLogout();
-        
+
         /* Test access for Authenticated user with 'administer securitytxt' permissions. */
         $this->drupalLogin($this->administerPermissionUser);
         $this->drupalGet('admin/config/system/securitytxt');
@@ -104,13 +105,13 @@ class SecuritytxtPermissionsTest extends BrowserTestBase {
         $policy_url = 'https://example.com/policy';
         $acknowledgement_url = 'https://example.com/acknowledgement';
         $signature_text = $this->randomMachineName(512);
-                        
+
         /* Log in, enable, configure & sign the security.txt file. */
         $this->drupalLogin($this->administerPermissionUser);
         $this->submitConfigureForm($enabled, $contact_email, $contact_phone, $contact_url, $encryption_key_url, $policy_url, $acknowledgement_url);
         $this->submitSignForm($signature_text);
         $this->drupalLogout();
-        
+
         /* Repeat the access permission tests. */
         /* Test access for Anonymous role with no permissions. */
         $this->drupalGet('admin/config/system/securitytxt');
@@ -145,7 +146,7 @@ class SecuritytxtPermissionsTest extends BrowserTestBase {
         $this->drupalGet('.well-known/security.txt.sig');
         $this->assertResponse(200, 'Access granted for Authenticated user with "view securitytxt" to security.txt.sig page.');
         $this->drupalLogout();
-        
+
         /* Test access for Authenticated user with 'administer securitytxt' permissions. */
         $this->drupalLogin($this->administerPermissionUser);
         $this->drupalGet('admin/config/system/securitytxt');
@@ -168,7 +169,7 @@ class SecuritytxtPermissionsTest extends BrowserTestBase {
         $this->assertResponse(200, 'Access granted for Authenticated user with both securitytxt perms to security.txt page.');
         $this->drupalGet('.well-known/security.txt.sig');
         $this->assertResponse(200, 'Access granted for Authenticated user with both securitytxt perms to security.txt.sig page.');
-        $this->drupalLogout();        
+        $this->drupalLogout();
     }
 
     protected function submitConfigureForm($enabled, $contact_email, $contact_phone, $contact_url, $encryption_key_url, $policy_url, $acknowledgement_url) {

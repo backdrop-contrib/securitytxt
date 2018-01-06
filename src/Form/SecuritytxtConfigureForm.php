@@ -2,73 +2,32 @@
 
 namespace Drupal\securitytxt\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Path\AliasManagerInterface;
-use Drupal\Core\Path\PathValidatorInterface;
-use Drupal\Core\Routing\RequestContext;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Configure site information settings for this site.
- *
- *
+ * Configure the security.txt file.
  */
 class SecuritytxtConfigureForm extends ConfigFormBase {
 
     /**
-     * The path alias manager.
-     *
-     * @var \Drupal\Core\Path\AliasManagerInterface
-     */
-    protected $aliasManager;
-
-    /**
-     * The path validator.
-     *
-     * @var \Drupal\Core\Path\PathValidatorInterface
-     */
-    protected $pathValidator;
-
-    /**
-     * The request context.
-     *
-     * @var \Drupal\Core\Routing\RequestContext
-     */
-    protected $requestContext;
-
-    /**
-     * Constructs a SecuritytxtForm object.
+     * Constructs a SecuritytxtConfigureForm object.
      *
      * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
      *   The factory for configuration objects.
-     * @param \Drupal\Core\Path\AliasManagerInterface $alias_manager
-     *   The path alias manager.
-     * @param \Drupal\Core\Path\PathValidatorInterface $path_validator
-     *   The path validator.
-     * @param \Drupal\Core\Routing\RequestContext $request_context
-     *   The request context.
      */
-    public function __construct(ConfigFactoryInterface $config_factory, AliasManagerInterface $alias_manager, PathValidatorInterface $path_validator, RequestContext $request_context) {
+    public function __construct(ConfigFactoryInterface $config_factory) {
         parent::__construct($config_factory);
-
-        $this->aliasManager = $alias_manager;
-        $this->pathValidator = $path_validator;
-        $this->requestContext = $request_context;
     }
 
     /**
      * {@inheritdoc}
      */
     public static function create(ContainerInterface $container) {
-        return new static(
-            $container->get('config.factory'),
-            $container->get('path.alias_manager'),
-            $container->get('path.validator'),
-            $container->get('router.request_context')
-        );
+        return new static($container->get('config.factory'));
     }
 
     /**
@@ -166,6 +125,9 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
         return parent::buildForm($form, $form_state);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function validateForm(array &$form, FormStateInterface $form_state) {
         $enabled = $form_state->getValue('enabled');
         $contact_email = $form_state->getValue('contact_email');
@@ -175,30 +137,50 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
         /* When enabled, check that at least one contact field is specified. */
         if ($enabled && $contact_email == '' && $contact_phone == '' && $contact_url == '') {
             $form_state->setErrorByName('contact', $this->t('You must specify at least one method of contact.'));
-        }        
+        }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function submitForm(array &$form, FormStateInterface $form_state) {
-        /* Warn if contact or encryption URLs are not loaded over HTTPS */
+        $enabled = $form_state->getValue('enabled');
+        $contact_email = $form_state->getValue('contact_email');
+        $contact_phone = $form_state->getValue('contact_phone');
         $contact_url = $form_state->getValue('contact_url');
+        $encryption_key_url = $form_state->getValue('encryption_key_url');
+        $policy_url = $form_state->getValue('policy_url');
+        $acknowledgement_url = $form_state->getValue('acknowledgement_url');
+
+        /* Warn if contact URL is not loaded over HTTPS */
         if ($contact_url != '' && substr($contact_url, 0, 8) !== 'https://') {
-            drupal_set_message('Your contact URL should really be loaded over HTTPS.', 'warning');
+            drupal_set_message(t('Your contact URL should really be loaded over HTTPS.'), 'warning');
         }
 
-        $encryption_key_url = $form_state->getValue('encryption_key_url');
+        /* Warn if encryption URL is not loaded over HTTPS */
         if ($encryption_key_url != '' && substr($encryption_key_url, 0, 8) !== 'https://') {
-            drupal_set_message('Your public key URL should really be loaded over HTTPS.', 'warning');
+            drupal_set_message(t('Your public key URL should really be loaded over HTTPS.'), 'warning');
+        }
+
+        /* Message the user to proceed to the sign page if they have enabled security.txt */
+        if ($enabled) {
+            drupal_set_message(
+                t(
+                    'You should now <a href=":sign">sign your security.txt file</a>.',
+                    [':sign' => Url::fromRoute('securitytxt.sign')->toString()]
+                )
+            );
         }
 
         /* Save the configuration */
         $this->config('securitytxt.settings')
-            ->set('enabled', $form_state->getValue('enabled'))
-            ->set('contact_email', $form_state->getValue('contact_email'))
-            ->set('contact_phone', $form_state->getValue('contact_phone'))
-            ->set('contact_url', $form_state->getValue('contact_url'))
-            ->set('encryption_key_url', $form_state->getValue('encryption_key_url'))
-            ->set('policy_url', $form_state->getValue('policy_url'))
-            ->set('acknowledgement_url', $form_state->getValue('acknowledgement_url'))
+            ->set('enabled', $enabled)
+            ->set('contact_email', $contact_email)
+            ->set('contact_phone', $contact_phone)
+            ->set('contact_url', $contact_url)
+            ->set('encryption_key_url', $encryption_key_url)
+            ->set('policy_url', $policy_url)
+            ->set('acknowledgement_url', $acknowledgement_url)
             ->save();
 
         parent::submitForm($form, $form_state);

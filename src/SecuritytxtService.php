@@ -6,17 +6,19 @@ use Drupal\Core\Url;
 
 /**
  * Securitytxt service class.
+ *
+ * Formats the security.txt output file.
  */
 class SecuritytxtService {
 
-    public function isEnabled() {
-        if (TRUE) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
+    /**
+     * Gets the body of a security.txt file.
+     *
+     * @return string
+     *   The body of a security.txt file.
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *   When the security.txt file is disabled.
+     */
     public function getSecuritytxtFile() {
         $settings_config = \Drupal::config('securitytxt.settings');
 
@@ -64,6 +66,14 @@ class SecuritytxtService {
         }
     }
 
+    /**
+     * Gets the body of a security.txt.sig file.
+     *
+     * @return string
+     *   The body of a security.txt.sig file.
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *   When the security.txt file is disabled.
+     */
     public function getSecuritytxtSignature() {
         $settings_config = \Drupal::config('securitytxt.settings');
 
