@@ -35,11 +35,11 @@ Table of Contents
 2 Installation
 ══════════════
 
-  This module should be installed in the usual way. [Read about
-  installing Drupal 8 modules].
+  This module should be installed in the usual way. Read about
+  [installing Drupal 8 modules].
 
 
-  [Read about installing Drupal 8 modules]
+  [installing Drupal 8 modules]
   https://www.drupal.org/docs/8/extending-drupal-8/installing-drupal-8-modules
 
 
