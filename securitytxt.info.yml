@@ -3,3 +3,4 @@ type: module
 description: 'Provides a security.txt file for your site.'
 package: Security
 core: '8.x'
+configure: securitytxt.configure
