@@ -20,7 +20,7 @@ class SecuritytxtController extends ControllerBase {
     protected $securitytxt;
 
     /**
-     * Contruct a new SecuritytxtController.
+     * Construct a new SecuritytxtController.
      *
      * @param \Drupal\securitytxt\SecuritytxtService
      *   The Securitytxt service.
@@ -39,7 +39,7 @@ class SecuritytxtController extends ControllerBase {
     }
 
     /**
-     * Get the security.txt file as a reponse object.
+     * Get the security.txt file as a response object.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *   The security.txt file as a response object with a content type of 'text/plain'.
@@ -52,7 +52,7 @@ class SecuritytxtController extends ControllerBase {
     }
 
     /**
-     * Get the security.txt.sig file as a reponse object.
+     * Get the security.txt.sig file as a response object.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *   The security.txt.sig file as a response object with a content type of 'text/plain'.
