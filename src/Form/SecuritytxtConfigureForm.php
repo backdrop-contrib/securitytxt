@@ -14,6 +14,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SecuritytxtConfigureForm extends ConfigFormBase {
 
   /**
+   * A 'securitytxt.settings' config instance.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $settings;
+
+  /**
    * Constructs a SecuritytxtConfigureForm object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -21,6 +28,7 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
    */
   public function __construct(ConfigFactoryInterface $config_factory) {
     parent::__construct($config_factory);
+    $this->settings = $config_factory->getEditable('securitytxt.settings');
   }
 
   /**
@@ -48,12 +56,10 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $settings_config = $this->config('securitytxt.settings');
-
     $form['enabled'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable the security.txt file for your site'),
-      '#default_value' => $settings_config->get('enabled'),
+      '#default_value' => $this->settings->get('enabled'),
       '#description' => $this->t('When enabled the security.txt file will be accessible to all users with the "view securitytxt" permission, you will almost certinaly want to give this permission to everyone i.e. authenticated and anonymous users.'),
     ];
 
@@ -66,19 +72,19 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
     $form['contact']['contact_email'] = [
       '#type' => 'email',
       '#title' => $this->t('Email'),
-      '#default_value' => $settings_config->get('contact_email'),
+      '#default_value' => $this->settings->get('contact_email'),
       '#description' => $this->t('Typically this would be of the form <kbd>security@example.com</kbd>. Leave it blank if you do not want to provide an email address.'),
     ];
     $form['contact']['contact_phone'] = [
       '#type' => 'tel',
       '#title' => $this->t('Phone'),
-      '#default_value' => $settings_config->get('contact_phone'),
+      '#default_value' => $this->settings->get('contact_phone'),
       '#description' => $this->t('Use full international format e.g. <kbd>+1-201-555-0123</kbd>. Leave it blank if you do not want to provide a phone number.'),
     ];
     $form['contact']['contact_url'] = [
       '#type' => 'url',
       '#title' => $this->t('URL'),
-      '#default_value' => $settings_config->get('contact_url'),
+      '#default_value' => $this->settings->get('contact_url'),
       '#description' => $this->t('The URL of a contact page which should be loaded over HTTPS. Leave it blank if you do not want to provide a contact page.'),
     ];
 
@@ -91,7 +97,7 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
     $form['encryption']['encryption_key_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Public key URL'),
-      '#default_value' => $settings_config->get('encryption_key_url'),
+      '#default_value' => $this->settings->get('encryption_key_url'),
       '#description' => $this->t('The URL of page which contains your public key. The page should be loaded over HTTPS.'),
     ];
 
@@ -104,7 +110,7 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
     $form['policy']['policy_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Security policy URL'),
-      '#default_value' => $settings_config->get('policy_url'),
+      '#default_value' => $this->settings->get('policy_url'),
       '#description' => $this->t('The URL of a page which provides details of your security and/or disclosure policy. Leave it blank if you do not have such a page.'),
     ];
 
@@ -117,7 +123,7 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
     $form['acknowledgement']['acknowledgement_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Acknowledgements page URL'),
-      '#default_value' => $settings_config->get('acknowledgement_url'),
+      '#default_value' => $this->settings->get('acknowledgement_url'),
       '#description' => $this->t('The URL of your security acknowledgements page. Leave it blank if you do not have such a page.'),
     ];
 
@@ -172,7 +178,7 @@ class SecuritytxtConfigureForm extends ConfigFormBase {
     }
 
     /* Save the configuration */
-    $this->config('securitytxt.settings')
+    $this->settings
       ->set('enabled', $enabled)
       ->set('contact_email', $contact_email)
       ->set('contact_phone', $contact_phone)
