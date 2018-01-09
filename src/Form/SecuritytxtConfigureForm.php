@@ -13,176 +13,176 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SecuritytxtConfigureForm extends ConfigFormBase {
 
-    /**
-     * Constructs a SecuritytxtConfigureForm object.
-     *
-     * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-     *   The factory for configuration objects.
-     */
-    public function __construct(ConfigFactoryInterface $config_factory) {
-        parent::__construct($config_factory);
+  /**
+   * Constructs a SecuritytxtConfigureForm object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The factory for configuration objects.
+   */
+  public function __construct(ConfigFactoryInterface $config_factory) {
+    parent::__construct($config_factory);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static($container->get('config.factory'));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'securitytxt_configure';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return ['securitytxt.settings'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $settings_config = $this->config('securitytxt.settings');
+
+    $form['enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable the security.txt file for your site'),
+      '#default_value' => $settings_config->get('enabled'),
+      '#description' => $this->t('When enabled the security.txt file will be accessible to all users with the "view securitytxt" permission, you will almost certinaly want to give this permission to everyone i.e. authenticated and anonymous users.'),
+    ];
+
+    $form['contact'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Contact'),
+      '#open' => TRUE,
+      '#description' => $this->t('You must provide at least one means of contact: email, phone or contact page URL.'),
+    ];
+    $form['contact']['contact_email'] = [
+      '#type' => 'email',
+      '#title' => $this->t('Email'),
+      '#default_value' => $settings_config->get('contact_email'),
+      '#description' => $this->t('Typically this would be of the form <kbd>security@example.com</kbd>. Leave it blank if you do not want to provide an email address.'),
+    ];
+    $form['contact']['contact_phone'] = [
+      '#type' => 'tel',
+      '#title' => $this->t('Phone'),
+      '#default_value' => $settings_config->get('contact_phone'),
+      '#description' => $this->t('Use full international format e.g. <kbd>+1-201-555-0123</kbd>. Leave it blank if you do not want to provide a phone number.'),
+    ];
+    $form['contact']['contact_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('URL'),
+      '#default_value' => $settings_config->get('contact_url'),
+      '#description' => $this->t('The URL of a contact page which should be loaded over HTTPS. Leave it blank if you do not want to provide a contact page.'),
+    ];
+
+    $form['encryption'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Encryption'),
+      '#open' => TRUE,
+      '#description' => $this->t('Allow people to send you encrypted messages by providing your public key.'),
+    ];
+    $form['encryption']['encryption_key_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Public key URL'),
+      '#default_value' => $settings_config->get('encryption_key_url'),
+      '#description' => $this->t('The URL of page which contains your public key. The page should be loaded over HTTPS.'),
+    ];
+
+    $form['policy'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Policy'),
+      '#open' => TRUE,
+      '#description' => $this->t('A security and/or disclosure policy can help security researchers understand what you are looking for and how to report security vulnerabilities.'),
+    ];
+    $form['policy']['policy_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Security policy URL'),
+      '#default_value' => $settings_config->get('policy_url'),
+      '#description' => $this->t('The URL of a page which provides details of your security and/or disclosure policy. Leave it blank if you do not have such a page.'),
+    ];
+
+    $form['acknowledgement'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Acknowledgement'),
+      '#open' => TRUE,
+      '#description' => $this->t('A security acknowldgements page should list the individuals or companies that have disclosed security vulnerabilities and worked with you to fix them.'),
+    ];
+    $form['acknowledgement']['acknowledgement_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Acknowledgements page URL'),
+      '#default_value' => $settings_config->get('acknowledgement_url'),
+      '#description' => $this->t('The URL of your security acknowledgements page. Leave it blank if you do not have such a page.'),
+    ];
+
+    return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $enabled = $form_state->getValue('enabled');
+    $contact_email = $form_state->getValue('contact_email');
+    $contact_phone = $form_state->getValue('contact_phone');
+    $contact_url = $form_state->getValue('contact_url');
+
+    /* When enabled, check that at least one contact field is specified. */
+    if ($enabled && $contact_email == '' && $contact_phone == '' && $contact_url == '') {
+      $form_state->setErrorByName('contact', $this->t('You must specify at least one method of contact.'));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $enabled = $form_state->getValue('enabled');
+    $contact_email = $form_state->getValue('contact_email');
+    $contact_phone = $form_state->getValue('contact_phone');
+    $contact_url = $form_state->getValue('contact_url');
+    $encryption_key_url = $form_state->getValue('encryption_key_url');
+    $policy_url = $form_state->getValue('policy_url');
+    $acknowledgement_url = $form_state->getValue('acknowledgement_url');
+
+    /* Warn if contact URL is not loaded over HTTPS */
+    if ($contact_url != '' && substr($contact_url, 0, 8) !== 'https://') {
+      drupal_set_message($this->t('Your contact URL should really be loaded over HTTPS.'), 'warning');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function create(ContainerInterface $container) {
-        return new static($container->get('config.factory'));
+    /* Warn if encryption URL is not loaded over HTTPS */
+    if ($encryption_key_url != '' && substr($encryption_key_url, 0, 8) !== 'https://') {
+      drupal_set_message($this->t('Your public key URL should really be loaded over HTTPS.'), 'warning');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormId() {
-        return 'securitytxt_configure';
+    /* Message the user to proceed to the sign page if they have enabled security.txt */
+    if ($enabled) {
+      drupal_set_message(
+        $this->t(
+          'You should now <a href=":sign">sign your security.txt file</a>.',
+          [':sign' => Url::fromRoute('securitytxt.sign')->toString()]
+        )
+      );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getEditableConfigNames() {
-        return ['securitytxt.settings'];
-    }
+    /* Save the configuration */
+    $this->config('securitytxt.settings')
+      ->set('enabled', $enabled)
+      ->set('contact_email', $contact_email)
+      ->set('contact_phone', $contact_phone)
+      ->set('contact_url', $contact_url)
+      ->set('encryption_key_url', $encryption_key_url)
+      ->set('policy_url', $policy_url)
+      ->set('acknowledgement_url', $acknowledgement_url)
+      ->save();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(array $form, FormStateInterface $form_state) {
-        $settings_config = $this->config('securitytxt.settings');
+    parent::submitForm($form, $form_state);
+  }
 
-        $form['enabled'] = [
-            '#type' => 'checkbox',
-            '#title' => t('Enable the security.txt file for your site'),
-            '#default_value' => $settings_config->get('enabled'),
-            '#description' => t('When enabled the security.txt file will be accessible to all users with the "view securitytxt" permission, you will almost certinaly want to give this permission to everyone i.e. authenticated and anonymous users.'),
-        ];
-
-        $form['contact'] = [
-            '#type' => 'details',
-            '#title' => t('Contact'),
-            '#open' => TRUE,
-            '#description' => t('You must provide at least one means of contact: email, phone or contact page URL.'),
-        ];
-        $form['contact']['contact_email'] = [
-            '#type' => 'email',
-            '#title' => t('Email'),
-            '#default_value' => $settings_config->get('contact_email'),
-            '#description' => t('Typically this would be of the form <kbd>security@example.com</kbd>. Leave it blank if you do not want to provide an email address.'),
-        ];
-        $form['contact']['contact_phone'] = [
-            '#type' => 'tel',
-            '#title' => t('Phone'),
-            '#default_value' => $settings_config->get('contact_phone'),
-            '#description' => t('Use full international format e.g. <kbd>+1-201-555-0123</kbd>. Leave it blank if you do not want to provide a phone number.'),
-        ];
-        $form['contact']['contact_url'] = [
-            '#type' => 'url',
-            '#title' => t('URL'),
-            '#default_value' => $settings_config->get('contact_url'),
-            '#description' => t('The URL of a contact page which should be loaded over HTTPS. Leave it blank if you do not want to provide a contact page.'),
-        ];
-
-        $form['encryption'] = [
-            '#type' => 'details',
-            '#title' => t('Encryption'),
-            '#open' => TRUE,
-            '#description' => t('Allow people to send you encrypted messages by providing your public key.'),
-        ];
-        $form['encryption']['encryption_key_url'] = [
-            '#type' => 'url',
-            '#title' => t('Public key URL'),
-            '#default_value' => $settings_config->get('encryption_key_url'),
-            '#description' => t('The URL of page which contains your public key. The page should be loaded over HTTPS.'),
-        ];
-
-        $form['policy'] = [
-            '#type' => 'details',
-            '#title' => t('Policy'),
-            '#open' => TRUE,
-            '#description' => t('A security and/or disclosure policy can help security researchers understand what you are looking for and how to report security vulnerabilities.'),
-        ];
-        $form['policy']['policy_url'] = [
-            '#type' => 'url',
-            '#title' => t('Security policy URL'),
-            '#default_value' => $settings_config->get('policy_url'),
-            '#description' => t('The URL of a page which provides details of your security and/or disclosure policy. Leave it blank if you do not have such a page.'),
-        ];
-
-        $form['acknowledgement'] = [
-            '#type' => 'details',
-            '#title' => t('Acknowledgement'),
-            '#open' => TRUE,
-            '#description' => t('A security acknowldgements page should list the individuals or companies that have disclosed security vulnerabilities and worked with you to fix them.'),
-        ];
-        $form['acknowledgement']['acknowledgement_url'] = [
-            '#type' => 'url',
-            '#title' => t('Acknowledgements page URL'),
-            '#default_value' => $settings_config->get('acknowledgement_url'),
-            '#description' => t('The URL of your security acknowledgements page. Leave it blank if you do not have such a page.'),
-        ];
-
-
-        return parent::buildForm($form, $form_state);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validateForm(array &$form, FormStateInterface $form_state) {
-        $enabled = $form_state->getValue('enabled');
-        $contact_email = $form_state->getValue('contact_email');
-        $contact_phone = $form_state->getValue('contact_phone');
-        $contact_url = $form_state->getValue('contact_url');
-
-        /* When enabled, check that at least one contact field is specified. */
-        if ($enabled && $contact_email == '' && $contact_phone == '' && $contact_url == '') {
-            $form_state->setErrorByName('contact', $this->t('You must specify at least one method of contact.'));
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function submitForm(array &$form, FormStateInterface $form_state) {
-        $enabled = $form_state->getValue('enabled');
-        $contact_email = $form_state->getValue('contact_email');
-        $contact_phone = $form_state->getValue('contact_phone');
-        $contact_url = $form_state->getValue('contact_url');
-        $encryption_key_url = $form_state->getValue('encryption_key_url');
-        $policy_url = $form_state->getValue('policy_url');
-        $acknowledgement_url = $form_state->getValue('acknowledgement_url');
-
-        /* Warn if contact URL is not loaded over HTTPS */
-        if ($contact_url != '' && substr($contact_url, 0, 8) !== 'https://') {
-            drupal_set_message(t('Your contact URL should really be loaded over HTTPS.'), 'warning');
-        }
-
-        /* Warn if encryption URL is not loaded over HTTPS */
-        if ($encryption_key_url != '' && substr($encryption_key_url, 0, 8) !== 'https://') {
-            drupal_set_message(t('Your public key URL should really be loaded over HTTPS.'), 'warning');
-        }
-
-        /* Message the user to proceed to the sign page if they have enabled security.txt */
-        if ($enabled) {
-            drupal_set_message(
-                t(
-                    'You should now <a href=":sign">sign your security.txt file</a>.',
-                    [':sign' => Url::fromRoute('securitytxt.sign')->toString()]
-                )
-            );
-        }
-
-        /* Save the configuration */
-        $this->config('securitytxt.settings')
-            ->set('enabled', $enabled)
-            ->set('contact_email', $contact_email)
-            ->set('contact_phone', $contact_phone)
-            ->set('contact_url', $contact_url)
-            ->set('encryption_key_url', $encryption_key_url)
-            ->set('policy_url', $policy_url)
-            ->set('acknowledgement_url', $acknowledgement_url)
-            ->save();
-
-        parent::submitForm($form, $form_state);
-    }
 }
