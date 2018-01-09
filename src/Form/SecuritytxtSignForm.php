@@ -14,6 +14,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SecuritytxtSignForm extends ConfigFormBase {
 
   /**
+   * A 'securitytxt.settings' config instance.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $settings;
+
+  /**
    * Constructs a SecuritytxtSignForm object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -21,6 +28,7 @@ class SecuritytxtSignForm extends ConfigFormBase {
    */
   public function __construct(ConfigFactoryInterface $config_factory) {
     parent::__construct($config_factory);
+    $this->settings = $config_factory->getEditable('securitytxt.settings');
   }
 
   /**
@@ -48,9 +56,7 @@ class SecuritytxtSignForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $settings_config = $this->config('securitytxt.settings');
-
-    $enabled = $settings_config->get('enabled');
+    $enabled = $this->settings->get('enabled');
 
     if (!$enabled) {
       $form['instructions'] = [
@@ -71,7 +77,7 @@ class SecuritytxtSignForm extends ConfigFormBase {
     $form['signature_text'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Signature'),
-      '#default_value' => $settings_config->get('signature_text'),
+      '#default_value' => $this->settings->get('signature_text'),
       '#rows' => 20,
     ];
 
@@ -88,9 +94,7 @@ class SecuritytxtSignForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('securitytxt.settings')
-      ->set('signature_text', $form_state->getValue('signature_text'))
-      ->save();
+    $this->settings->set('signature_text', $form_state->getValue('signature_text'))->save();
 
     parent::submitForm($form, $form_state);
   }
