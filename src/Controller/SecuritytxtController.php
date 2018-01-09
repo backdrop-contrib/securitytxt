@@ -3,7 +3,7 @@
 namespace Drupal\securitytxt\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\securitytxt\SecuritytxtService;
+use Drupal\securitytxt\SecuritytxtSerializer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,20 +13,20 @@ use Symfony\Component\HttpFoundation\Response;
 class SecuritytxtController extends ControllerBase {
 
   /**
-   * The Securitytxt service.
+   * The Securitytxt serializer.
    *
-   * @var \Drupal\securitytxt\SecuritytxtService
+   * @var \Drupal\securitytxt\SecuritytxtSerializer
    */
-  protected $securitytxt;
+  protected $serializer;
 
   /**
    * Construct a new SecuritytxtController.
    *
-   * @param \Drupal\securitytxt\SecuritytxtService $securitytxt
-   *   The Securitytxt service.
+   * @param \Drupal\securitytxt\SecuritytxtSerializer $serializer
+   *   The Securitytxt serializer.
    */
-  public function __construct(SecuritytxtService $securitytxt) {
-    $this->securitytxt = $securitytxt;
+  public function __construct(SecuritytxtSerializer $serializer) {
+    $this->serializer = $serializer;
   }
 
   /**
@@ -34,7 +34,7 @@ class SecuritytxtController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('securitytxt.service')
+      $container->get('securitytxt.serializer')
     );
   }
 
@@ -46,7 +46,7 @@ class SecuritytxtController extends ControllerBase {
    *   'text/plain'.
    */
   public function securitytxtFile() {
-    $content = $this->securitytxt->getSecuritytxtFile();
+    $content = $this->serializer->getSecuritytxtFile();
     $response = new Response($content, 200, ['Content-Type' => 'text/plain']);
 
     return $response;
@@ -60,7 +60,7 @@ class SecuritytxtController extends ControllerBase {
    *   'text/plain'.
    */
   public function securitytxtSignature() {
-    $content = $this->securitytxt->getSecuritytxtSignature();
+    $content = $this->serializer->getSecuritytxtSignature();
     $response = new Response($content, 200, ['Content-Type' => 'text/plain']);
 
     return $response;

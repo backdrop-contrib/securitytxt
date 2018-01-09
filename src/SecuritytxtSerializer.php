@@ -6,11 +6,11 @@ use Drupal\Core\Url;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Securitytxt service class.
+ * Securitytxt serializer class.
  *
- * Formats the security.txt output file.
+ * Formats the security.txt and security.txt.sig output files.
  */
-class SecuritytxtService {
+class SecuritytxtSerializer {
 
   /**
    * Gets the body of a security.txt file.
