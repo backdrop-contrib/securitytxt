@@ -26,7 +26,7 @@ Table of Contents
 ══════════════
 
   The Security.txt module provides an implementation of the security.txt
-  draft RFC standard. It’s purpose is to provide a standardised way to
+  draft RFC standard. Its purpose is to provide a standardised way to
   document your website’s security contact details and policy. This
   allows users and security researchers to securely disclose security
   vulnerabilities to you.
@@ -53,10 +53,10 @@ Table of Contents
 3.1 Permissions
 ───────────────
 
-  You control the permissions each role gets at
+  You control the permissions granted to each role at
   `/admin/people/permissions'. You will almost certainly want to give
-  everybody the `View security.txt' permission, i.e. give it to both the
-  `Anoymous User' and `Authenticated User' roles.
+  everyone the `View security.txt' permission, i.e. give it to both the
+  `Anonymous User' and `Authenticated User' roles.
 
   You will only want to give the `Administer security.txt' permission to
   very trusted roles.
@@ -65,26 +65,25 @@ Table of Contents
 3.2 Security.txt configuration
 ──────────────────────────────
 
-  The Security.txt configuration page is under `System' on the Drupal
-  configuration page. Once you have filled in all the details you want
-  to add to your `security.txt' file and pressed the `Save
-  configuration' button you will want to proceed to the `Sign' tab of
-  the configuration form.
+  The Security.txt configuration page can be found under `System' on the
+  Drupal configuration page. Fill in all the details you want to add to
+  your `security.txt' file, then press the `Save configuration' button.
+  You should then proceed to the `Sign' tab of the configuration form.
 
 
 3.3 Security.txt signing
 ────────────────────────
 
-  Once you have enabled your `security.txt' file you will want to
-  provide a digital signature for it by following the instructions on
-  the `Sign' tab of the configuration page.
+  You can provide a digital signature for your `security.txt' file by
+  following the instructions on the `Sign' tab of the module’s
+  configuration page.
 
 
 4 Use
 ═════
 
   Once you have completed the configuration of the Security.txt module
-  your security.txt and security.txt.sig files which be available at the
+  your security.txt and security.txt.sig files will be available at the
   following standard URLs:
 
   • /.well-known/security.txt
