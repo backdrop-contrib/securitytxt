@@ -60,53 +60,76 @@ abstract class SecuritytxtBaseTest extends BrowserTestBase {
   }
 
   /**
-   * Submit the Security.txt  module’s form.
+   * Get a valid configuration array.
    *
-   * @param bool $enabled
-   *   The value for the enabled checkbox.
-   * @param string $contact_email
-   *   The value for the contact 'Email' textfield.
-   * @param string $contact_phone
-   *   The value for the contact 'Phone' textfield.
-   * @param string $contact_url
-   *   The value for the contact 'URL' textfield.
-   * @param string $encryption_key_url
-   *   The value for the 'Public key URL' textfield.
-   * @param string $policy_url
-   *   The value for the 'Security policy URL' textfield.
-   * @param string $acknowledgement_url
-   *   The value for the 'Acknowledgements page URL' textfield.
+   * @return array
+   *   An array of valid configuration values.
    */
-  protected function submitConfigureForm($enabled, $contact_email, $contact_phone, $contact_url, $encryption_key_url, $policy_url, $acknowledgement_url) {
+  protected function getValidConfiguration() {
+    $valid_configuration = [];
+    $valid_configuration['enabled'] = TRUE;
+    $valid_configuration['contact_email'] = $this->randomMachineName(16) . '@example.com';
+    $valid_configuration['contact_phone'] = '+44-7700-900' . rand(100, 999);
+    $valid_configuration['contact_url'] = 'https://example.com/contact/' . $this->randomMachineName(16);
+    $valid_configuration['encryption_key_url'] = 'https://example.com/key/' . $this->randomMachineName(16);
+    $valid_configuration['policy_url'] = 'https://example.com/policy/' . $this->randomMachineName(16);
+    $valid_configuration['acknowledgement_url'] = 'https://example.com/acknowledgement/' . $this->randomMachineName(16);
+    $valid_configuration['signature_text'] = $this->randomMachineName(512);
+
+    return $valid_configuration;
+  }
+
+  /**
+   * Submit the 'Configure' form.
+   *
+   * @param array $edit
+   *   An associated array suitable for the drupalPostForm() method. It should
+   *   have the following keys defined: enabled, contact_email, contact_phone,
+   *   contact_url, encryption_key_url, policy_url, acknowledgement_url.
+   */
+  protected function submitConfigureForm(array $edit) {
     $path = 'admin/config/system/securitytxt';
-    $edit = [
-      'enabled' => $enabled,
-      'contact_email' => $contact_email,
-      'contact_phone' => $contact_phone,
-      'contact_url' => $contact_url,
-      'encryption_key_url' => $encryption_key_url,
-      'policy_url' => $policy_url,
-      'acknowledgement_url' => $acknowledgement_url,
-    ];
     $submit = 'Save configuration';
     $options = [];
     $this->drupalPostForm($path, $edit, $submit, $options);
   }
 
   /**
-   * Submit the Security.txt module’s 'Sign' form.
+   * Submit the 'Sign' form.
    *
-   * @param string $signature_text
-   *   The value for the 'Acknowledgements page URL' textfield.
+   * @param array $edit
+   *   An associated array suitable for the drupalPostForm() method. It should
+   *   have the following key defined: security_text.
    */
-  protected function submitSignForm($signature_text) {
+  protected function submitSignForm(array $edit) {
     $path = 'admin/config/system/securitytxt/sign';
-    $edit = [
-      'signature_text' => $signature_text,
-    ];
     $submit = 'Save configuration';
     $options = [];
     $this->drupalPostForm($path, $edit, $submit, $options);
+  }
+
+  /**
+   * Submit a valid configuration to both the 'Configure' and 'Sign' forms.
+   *
+   * @return array
+   *   An array of valid configuration values.
+   */
+  protected function submitValidConfiguration() {
+    $this->drupalLogin($this->administerPermissionUser);
+    $this->assertSession()->statusCodeEquals(200);
+
+    $valid_configuration = $this->getValidConfiguration();
+    $configure_edit = $valid_configuration;
+    unset($configure_edit['signature_text']);
+    $this->submitConfigureForm($configure_edit);
+
+    $sign_edit['signature_text'] = $valid_configuration['signature_text'];
+    $this->submitSignForm($sign_edit);
+
+    $this->drupalLogout();
+    $this->assertSession()->statusCodeEquals(200);
+
+    return $valid_configuration;
   }
 
 }
