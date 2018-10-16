@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the securitytxt module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @see http://api.drupal.org/api/drupal/modules--system--system.api.php/function/hook_install/7
+ */
+function securitytxt_install() {
+  $settings = array();
+  $settings['enabled'] = FALSE;
+  $settings['contact_email'] = '';
+  $settings['contact_phone'] = '';
+  $settings['contact_url'] = '';
+  $settings['encryption_key_url'] = '';
+  $settings['policy_url'] = '';
+  $settings['acknowledgement_url'] = '';
+  $settings['signature_text'] = '';
+
+  variable_set('securitytxt', $settings);
+}
+
+/**
+ * Implements hook_uninstall().
+ *
+ * @see http://api.drupal.org/api/drupal/modules--system--system.api.php/function/hook_uninstall/7
+ */
+function securitytxt_uninstall() {
+  variable_del('securitytxt');
+}

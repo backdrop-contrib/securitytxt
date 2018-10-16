@@ -1,3 +1,36 @@
+<?php
+
+/**
+ * Security.txt file configuration form.
+ *
+ * @ingroup forms
+ */
+function securitytxt_file_form() {
+  $form['description'] = array(
+    '#markup' => '<p>' . t("This is the security.txt file configuration form.") . '</p>',
+  );
+
+
+  return $form;
+}
+
+/**
+ * Security.txt sign configuration form.
+ *
+ * @ingroup forms
+ */
+function securitytxt_sign_form() {
+  $form['description'] = array(
+    '#markup' => '<p>' . t("This is the security.txt SIGN configuration form.") . '</p>',
+  );
+
+  return $form;
+}
+
+
+/*
+SCHEMA
+
 securitytxt.settings:
   type: config_object
   label: 'Security.txt settings'
@@ -26,3 +59,4 @@ securitytxt.settings:
     signature_text:
       type: string
       label: 'Plain text PGP signature of security.txt'
+ */
