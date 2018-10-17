@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ * Tests for securitytxt.module.
+ */
+
+class SecuritytxtDisabledTestCase extends DrupalWebTestCase {
+  const SECURITY_TXT_PATH = './well-known/security.txt';
+  const SECURITY_TXT_SIG_PATH = './well-known/security.txt.sig';
+  const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
+  const SECURITY_TXT_CONF_SIGN_PATH = 'admin/config/system/securitytxt/sign';
+
+  protected $authenticated_user;
+  protected $authorised_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Site security.txt file disabled',
+      'description' => 'A collection of tests to perform when the site security.txt file has been disabled.',
+      'group' => 'Security.txt',
+    );
+  }
+
+  /**
+   * Enable modules and create users with specific permissions.
+   */
+  function setUp() {
+    parent::setUp('securitytxt');
+
+    // Create users.
+    $this->authenticated_user = $this->drupalCreateUser(array('view securitytxt'));
+    $this->administrator_user = $this->drupalCreateUser(array('administer securitytxt'));
+  }
+
+  /**
+   * Test page access for various users when Security.txt has not been
+   * configured or enabled.
+   */
+  function testPageAccess() {
+    // Anonymous user page access
+    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+
+    // Authenticated user page access
+    $this->drupalLogin($this->authenticated_user);
+
+    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalLogout();
+
+    // Administrator user page access
+    $this->drupalLogin($this->administrator_user);
+
+    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(200);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(200);
+
+    $this->drupalLogout();
+  }
+}

@@ -3,4 +3,4 @@ description = Provides a security.txt file for your site.
 core = 7.x
 package = Security
 configure =  admin/config/system/securitytxt
-;files[] = tests/example.test
+files[] = securitytxt.test
