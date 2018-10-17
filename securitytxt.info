@@ -2,5 +2,5 @@ name = Security.txt
 description = Provides a security.txt file for your site.
 core = 7.x
 package = Security
-files[] = tests/example.test
-configure =  admin/config/securitytxt/path
+configure =  admin/config/system/securitytxt
+;files[] = tests/example.test
