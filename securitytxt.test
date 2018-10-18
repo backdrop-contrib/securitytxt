@@ -135,7 +135,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   protected $administratorUser;
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function getInfo() {
     return array(
