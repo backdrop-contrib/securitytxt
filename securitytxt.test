@@ -180,7 +180,6 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
     $this->assertResponse(403);
 
-
     // Authenticated user page access.
     $this->drupalLogin($this->authenticatedUser);
 
@@ -231,7 +230,6 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
 
     $this->drupalLogout();
 
-
     // Configure Security.txt module via direct database access.
     $enabled = TRUE;
     $contact_email = 'contact@example.com';
@@ -248,9 +246,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
       $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
     );
 
-
     // Repeat access tests now that Security.txt module has been configured.
-
     // Anonymous user page access.
     $this->checkSecurityTxtFile(
       $enabled,
@@ -271,7 +267,6 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
 
     $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
     $this->assertResponse(403);
-
 
     // Authenticated user page access.
     $this->drupalLogin($this->authenticatedUser);
@@ -396,8 +391,13 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
    */
   private function setConfigurationViaForm(
     $enabled,
-    $contact_email, $contact_phone, $contact_url,
-    $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
+    $contact_email,
+    $contact_phone,
+    $contact_url,
+    $encryption_key_url,
+    $policy_url,
+    $acknowledgement_url,
+    $signature_text
   ) {
     // Submit the configure form.
     $edit = array();
@@ -432,8 +432,12 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
    */
   private function checkSecurityTxtFile(
     $enabled,
-    $contact_email, $contact_phone, $contact_url,
-    $encryption_key_url, $policy_url, $acknowledgement_url
+    $contact_email,
+    $contact_phone,
+    $contact_url,
+    $encryption_key_url,
+    $policy_url,
+    $acknowledgement_url
   ) {
     $this->drupalGet(self::SECURITY_TXT_PATH);
 
@@ -446,7 +450,8 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
       $this->assertText('Policy: ' . $policy_url);
       $this->assertText('Acknowledgement: ' . $acknowledgement_url);
       $this->assertText('Signature: ' . url(self::SECURITY_TXT_SIG_PATH, array('absolute' => TRUE)));
-    } else {
+    }
+    else {
       $this->assertResponse(404);
     }
   }
@@ -464,8 +469,10 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     if ($enabled) {
       $this->assertResponse(200);
       $this->assertText($signature_text);
-    } else {
+    }
+    else {
       $this->assertResponse(404);
     }
   }
+
 }

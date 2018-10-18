@@ -49,8 +49,9 @@ function securitytxt_file_page() {
 
     drupal_add_http_header('Content-Type', 'text/plain');
     print($content);
-    exit(0);
-  } else {
+    drupal_exit();
+  }
+  else {
     drupal_not_found();
   }
 }
@@ -64,8 +65,9 @@ function securitytxt_signature_page() {
   if ($settings['enabled'] && $settings['signature_text']) {
     drupal_add_http_header('Content-Type', 'text/plain');
     print($settings['signature_text']);
-    exit(0);
-  } else {
+    drupal_exit();
+  }
+  else {
     drupal_not_found();
   }
 }

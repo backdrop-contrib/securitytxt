@@ -254,7 +254,7 @@ function _securitytxt_valid_phone($phone) {
 
   if (preg_match($pattern, $phone)) {
     return TRUE;
-  } else {
-    return FALSE;
   }
+
+  return FALSE;
 }
