@@ -6,8 +6,7 @@
  */
 
 /**
- * Test case with the Security.txt module
- * disabled.
+ * Test case with the Security.txt module disabled.
  */
 class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
   const SECURITY_TXT_PATH = '.well-known/security.txt';
@@ -66,7 +65,6 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
     $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
     $this->assertResponse(403);
 
-
     // Authenticated user page access.
     $this->drupalLogin($this->authenticatedUser);
 
@@ -89,7 +87,6 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
     $this->assertResponse(403);
 
     $this->drupalLogout();
-
 
     // Administrator user page access.
     $this->drupalLogin($this->administratorUser);
@@ -120,11 +117,11 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
 
     $this->drupalLogout();
   }
+
 }
 
 /**
- * Test case for standard drupal installation with the Security.txt module
- * enabled.
+ * Test case with the Security.txt module enabled.
  */
 class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   const SECURITY_TXT_PATH = '.well-known/security.txt';
@@ -137,6 +134,9 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   protected $authenticatedUser;
   protected $administratorUser;
 
+  /**
+   * {@inheritDoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Security.txt module enabled',
@@ -365,13 +365,17 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Set the Security.txt configuration via direct database access, not via
-   * the configuration form.
+   * Set configuration via direct database access.
    */
   private function setConfigurationViaDatabase(
     $enabled,
-    $contact_email, $contact_phone, $contact_url,
-    $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
+    $contact_email,
+    $contact_phone,
+    $contact_url,
+    $encryption_key_url,
+    $policy_url,
+    $acknowledgement_url,
+    $signature_text
   ) {
     $settings = array();
     $settings['enabled'] = $enabled;
@@ -387,7 +391,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Set the Security.txt configuration via the configuration form.
+   * Set configuration via the form.
    */
   private function setConfigurationViaForm(
     $enabled,
@@ -427,8 +431,10 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Check the existance and content of the security.txt at
-   * .well-known/security.txt
+   * Check security.txt file.
+   *
+   * Check the existance and content of the security.txt file at
+   * .well-known/security.txt according to whether it has been enabled or not.
    */
   private function checkSecurityTxtFile(
     $enabled,
@@ -457,8 +463,10 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Check the existance and content of the security.txt.sig at
-   * .well-known/security.txt.sig
+   * Check security.txt.sig file.
+   *
+   * Check the existance and content of .well-known/security.txt.sig according
+   * to whether the security.txt file is enabled or not.
    */
   private function checkSecurityTxtSigFile(
     $enabled,

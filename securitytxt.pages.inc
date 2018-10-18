@@ -2,7 +2,8 @@
 
 /**
  * @file
- * Page callbacks for the /.well-known/security.txt and /.well-known/security.txt.sig URLs.
+ * Page callbacks for the /.well-known/security.txt and
+ * /.well-known/security.txt.sig URLs.
  */
 
 /**
