@@ -171,7 +171,7 @@ function securitytxt_file_form_submit($form, &$form_state) {
     drupal_set_message(
       t(
         'You should now <a href="@sign">sign your security.txt file</a>.',
-        array('@sign' =>  url('admin/config/system/securitytxt/sign'))
+        array('@sign' => url('admin/config/system/securitytxt/sign'))
       )
     );
   }
@@ -201,14 +201,10 @@ function securitytxt_sign_form() {
 
   $form['instructions'] = array(
     '#type' => 'markup',
-    '#markup' => '<ol><li>' .
-    t(
-      '<a href="@download" download="security.txt">Download</a> your security.txt file.',
+    '#markup' => t(
+      '<ol><li><a href="@download" download="security.txt">Download</a> your security.txt file.</li><li><p>Sign your security.txt file with the encryption key you specified in your security.txt file. You can do this with GPG with a command like:</p><p><kbd>gpg -u KEYID --output security.txt.sig  --armor --detach-sig security.txt</kbd></p></li><li>Paste the contents of the <kbd>security.txt.sig</kbd> file into the text box below.</li></ol>',
       array('@download' => '/.well-known/security.txt')
-    ) .
-    '</li><li><p>Sign your security.txt file with the encryption key you specified in your security.txt file. You can do this with GPG with a command like:</p><p><kbd>gpg -u KEYID --output security.txt.sig  --armor --detach-sig security.txt</kbd></p></li>' .
-    '<li>Paste the contents of the <kbd>security.txt.sig</kbd> file into the text box below.</li>' .
-    '</ol>',
+    ),
   );
   $form['signature_text'] = array(
     '#type' => 'textarea',

@@ -6,7 +6,7 @@
  */
 
 /**
- * Test case for standard drupal installation with the Security.txt module
+ * Test case with the Security.txt module
  * disabled.
  */
 class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
@@ -17,9 +17,12 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
   const HELP_PATH = 'admin/help';
   const SECURITY_TXT_HELP_PATH = 'admin/help/securitytxt';
 
-  protected $authenticated_user;
-  protected $authorised_user;
+  protected $authenticatedUser;
+  protected $administratorUser;
 
+  /**
+   * {@inheritdoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Security.txt module disabled',
@@ -31,20 +34,20 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
   /**
    * Enable modules and create users with specific permissions.
    */
-  function setUp() {
-  // Add modules not enabled in a standard (not minimal) drupal install
-  parent::setUp();
+  public function setUp() {
+    // Add modules not enabled in a standard (not minimal) drupal install.
+    parent::setUp();
 
-  // Create users.
-  $this->authenticated_user = $this->drupalCreateUser();
-  $this->administrator_user = $this->drupalCreateUser(array('access administration pages'));
-}
+    // Create users.
+    $this->authenticatedUser = $this->drupalCreateUser();
+    $this->administratorUser = $this->drupalCreateUser(array('access administration pages'));
+  }
 
   /**
    * Test page access for various users.
    */
-  function testPageAccess() {
-    // Anonymous user page access
+  public function testPageAccess() {
+    // Anonymous user page access.
     $this->drupalGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
@@ -64,8 +67,8 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
     $this->assertResponse(403);
 
 
-    // Authenticated user page access
-    $this->drupalLogin($this->authenticated_user);
+    // Authenticated user page access.
+    $this->drupalLogin($this->authenticatedUser);
 
     $this->drupalGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
@@ -88,8 +91,8 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
     $this->drupalLogout();
 
 
-    // Administrator user page access
-    $this->drupalLogin($this->administrator_user);
+    // Administrator user page access.
+    $this->drupalLogin($this->administratorUser);
 
     $this->drupalGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
@@ -131,8 +134,8 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   const HELP_PATH = 'admin/help';
   const SECURITY_TXT_HELP_PATH = 'admin/help/securitytxt';
 
-  protected $authenticated_user;
-  protected $authorised_user;
+  protected $authenticatedUser;
+  protected $administratorUser;
 
   public static function getInfo() {
     return array(
@@ -145,20 +148,20 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   /**
    * Enable modules and create users with specific permissions.
    */
-  function setUp() {
-    // Add modules not enabled in a standard (not minimal) drupal install
+  public function setUp() {
+    // Add modules not enabled in a standard (not minimal) drupal install.
     parent::setUp('securitytxt');
 
     // Create users.
-    $this->authenticated_user = $this->drupalCreateUser(array('view securitytxt'));
-    $this->administrator_user = $this->drupalCreateUser(array('administer securitytxt', 'access administration pages'));
+    $this->authenticatedUser = $this->drupalCreateUser(array('view securitytxt'));
+    $this->administratorUser = $this->drupalCreateUser(array('administer securitytxt', 'access administration pages'));
   }
 
   /**
    * Test page access for various users.
    */
-  function testPageAccess() {
-    // Anonymous user page access
+  public function testPageAccess() {
+    // Anonymous user page access.
     $this->drupalGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
@@ -178,8 +181,8 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $this->assertResponse(403);
 
 
-    // Authenticated user page access
-    $this->drupalLogin($this->authenticated_user);
+    // Authenticated user page access.
+    $this->drupalLogin($this->authenticatedUser);
 
     $this->drupalGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
@@ -201,8 +204,8 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
 
     $this->drupalLogout();
 
-    // Administrator user page access
-    $this->drupalLogin($this->administrator_user);
+    // Administrator user page access.
+    $this->drupalLogin($this->administratorUser);
 
     $this->drupalGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
@@ -229,7 +232,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $this->drupalLogout();
 
 
-    // Configure Security.txt module via direct database access
+    // Configure Security.txt module via direct database access.
     $enabled = TRUE;
     $contact_email = 'contact@example.com';
     $contact_phone = '+44-1632-123456';
@@ -246,9 +249,9 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     );
 
 
-    // Repeat access tests now that Security.txt module has been configured
+    // Repeat access tests now that Security.txt module has been configured.
 
-    // Anonymous user page access
+    // Anonymous user page access.
     $this->checkSecurityTxtFile(
       $enabled,
       $contact_email, $contact_phone, $contact_url,
@@ -270,8 +273,8 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $this->assertResponse(403);
 
 
-    // Authenticated user page access
-    $this->drupalLogin($this->authenticated_user);
+    // Authenticated user page access.
+    $this->drupalLogin($this->authenticatedUser);
 
     $this->checkSecurityTxtFile(
       $enabled,
@@ -295,8 +298,8 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
 
     $this->drupalLogout();
 
-    // Administrator user page access
-    $this->drupalLogin($this->administrator_user);
+    // Administrator user page access.
+    $this->drupalLogin($this->administratorUser);
 
     $this->checkSecurityTxtFile(
       $enabled,
@@ -328,8 +331,8 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
   /**
    * Test configure form.
    */
-  function testConfigureForm() {
-    // Configuration values used for this test
+  public function testConfigureForm() {
+    // Configuration values used for this test.
     $enabled = TRUE;
     $contact_email = 'contact@example.com';
     $contact_phone = '+44-1632-123456';
@@ -339,24 +342,24 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $acknowledgement_url = 'https://example.com/acknowledgements';
     $signature_text = 'THIS IS THE SIGNATURE TEXT';
 
-    // Log in as administrator
-    $this->drupalLogin($this->administrator_user);
+    // Log in as administrator.
+    $this->drupalLogin($this->administratorUser);
 
-    // Check that the security.txt file is disabled
+    // Check that the security.txt file is disabled.
     $this->checkSecurityTxtFile(
       FALSE,
       $contact_email, $contact_phone, $contact_url,
       $encryption_key_url, $policy_url, $acknowledgement_url
     );
 
-    // Set the configuration via the form
+    // Set the configuration via the form.
     $this->setConfigurationViaForm(
       $enabled,
       $contact_email, $contact_phone, $contact_url,
       $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
     );
 
-    // Check the security.txt and security.txt.sig files
+    // Check the security.txt and security.txt.sig files.
     $this->checkSecurityTxtFile(
       $enabled,
       $contact_email, $contact_phone, $contact_url,
@@ -396,7 +399,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $contact_email, $contact_phone, $contact_url,
     $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
   ) {
-    // Submit the configure form
+    // Submit the configure form.
     $edit = array();
     $edit['enabled'] = $enabled;
     $edit['contact_email'] = $contact_email;
@@ -412,7 +415,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     );
     $this->assertResponse(200);
 
-    // Submit the sign form
+    // Submit the sign form.
     $edit = array();
     $edit['signature_text'] = $signature_text;
     $this->drupalPost(
@@ -465,5 +468,4 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
       $this->assertResponse(404);
     }
   }
-
 }

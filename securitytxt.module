@@ -8,7 +8,7 @@
  */
 
 /**
- * Implements hook_help($path, $arg)
+ * Implements hook_help().
  *
  * @see https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_help/7.x
  */
@@ -24,7 +24,7 @@ function securitytxt_help($path, $arg) {
                   '@site' => 'https://securitytxt.org',
                   '@rfc' => 'https://tools.ietf.org/html/draft-foudil-securitytxt-02',
                 )
-              ).
+              ) .
               '</p>';
       $output .= '<h3>' . t('Uses') . '</h3>';
       $output .= '<dl>';
@@ -59,7 +59,7 @@ function securitytxt_help($path, $arg) {
                        '@site' => 'https://securitytxt.org',
                        '@rfc' => 'https://tools.ietf.org/html/draft-foudil-securitytxt-02',
                      )
-                   ).
+                   ) .
                    '</p>';
 
     case 'admin/config/system/securitytxt/sign':
@@ -68,7 +68,7 @@ function securitytxt_help($path, $arg) {
 }
 
 /**
- * Implements hook_menu()
+ * Implements hook_menu().
  *
  * @see https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x
  */
@@ -117,7 +117,7 @@ function securitytxt_menu() {
 }
 
 /**
- * Implements hook_permission()
+ * Implements hook_permission().
  *
  * @see https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_permission/7.x
  */
@@ -131,6 +131,6 @@ function securitytxt_permission() {
     'view securitytxt' => array(
       'title' => t('View security.txt'),
       'description' => t('Allows access to the security.txt and security.txt.sig files. You will almost certinaly want to grant this permission to both the Anonymous and Authenticated user roles.'),
-    )
+    ),
   );
 }
