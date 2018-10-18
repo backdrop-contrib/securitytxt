@@ -5,19 +5,25 @@
  * Tests for securitytxt.module.
  */
 
-class SecuritytxtDisabledTestCase extends DrupalWebTestCase {
-  const SECURITY_TXT_PATH = './well-known/security.txt';
-  const SECURITY_TXT_SIG_PATH = './well-known/security.txt.sig';
+/**
+ * Test case for standard drupal installation with the Security.txt module
+ * disabled.
+ */
+class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
+  const SECURITY_TXT_PATH = '.well-known/security.txt';
+  const SECURITY_TXT_SIG_PATH = '.well-known/security.txt.sig';
   const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
   const SECURITY_TXT_CONF_SIGN_PATH = 'admin/config/system/securitytxt/sign';
+  const HELP_PATH = 'admin/help';
+  const SECURITY_TXT_HELP_PATH = 'admin/help/securitytxt';
 
   protected $authenticated_user;
   protected $authorised_user;
 
   public static function getInfo() {
     return array(
-      'name' => 'Site security.txt file disabled',
-      'description' => 'A collection of tests to perform when the site security.txt file has been disabled.',
+      'name' => 'Security.txt module disabled',
+      'description' => 'Tests a standard drupal installation with Security.txt module disabled.',
       'group' => 'Security.txt',
     );
   }
@@ -26,16 +32,16 @@ class SecuritytxtDisabledTestCase extends DrupalWebTestCase {
    * Enable modules and create users with specific permissions.
    */
   function setUp() {
-    parent::setUp('securitytxt');
+  // Add modules not enabled in a standard (not minimal) drupal install
+  parent::setUp();
 
-    // Create users.
-    $this->authenticated_user = $this->drupalCreateUser(array('view securitytxt'));
-    $this->administrator_user = $this->drupalCreateUser(array('administer securitytxt'));
-  }
+  // Create users.
+  $this->authenticated_user = $this->drupalCreateUser();
+  $this->administrator_user = $this->drupalCreateUser(array('access administration pages'));
+}
 
   /**
-   * Test page access for various users when Security.txt has not been
-   * configured or enabled.
+   * Test page access for various users.
    */
   function testPageAccess() {
     // Anonymous user page access
@@ -49,6 +55,12 @@ class SecuritytxtDisabledTestCase extends DrupalWebTestCase {
     $this->assertResponse(403);
 
     $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
     $this->assertResponse(403);
 
 
@@ -65,6 +77,126 @@ class SecuritytxtDisabledTestCase extends DrupalWebTestCase {
     $this->assertResponse(403);
 
     $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalLogout();
+
+
+    // Administrator user page access
+    $this->drupalLogin($this->administrator_user);
+
+    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('System | Drupal'));
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('System | Drupal'));
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('Help | Drupal'));
+    $this->assertNoLink(t('Security.txt'));
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('Help | Drupal'));
+    $this->assertNoText(t('The Security.txt module provides an implementation of the new'));
+
+    $this->drupalLogout();
+  }
+}
+
+/**
+ * Test case for standard drupal installation with the Security.txt module
+ * enabled.
+ */
+class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
+  const SECURITY_TXT_PATH = '.well-known/security.txt';
+  const SECURITY_TXT_SIG_PATH = '.well-known/security.txt.sig';
+  const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
+  const SECURITY_TXT_CONF_SIGN_PATH = 'admin/config/system/securitytxt/sign';
+  const HELP_PATH = 'admin/help';
+  const SECURITY_TXT_HELP_PATH = 'admin/help/securitytxt';
+
+  protected $authenticated_user;
+  protected $authorised_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Security.txt module enabled',
+      'description' => 'Tests a standard drupal installation with Security.txt module enabled.',
+      'group' => 'Security.txt',
+    );
+  }
+
+  /**
+   * Enable modules and create users with specific permissions.
+   */
+  function setUp() {
+    // Add modules not enabled in a standard (not minimal) drupal install
+    parent::setUp('securitytxt');
+
+    // Create users.
+    $this->authenticated_user = $this->drupalCreateUser(array('view securitytxt'));
+    $this->administrator_user = $this->drupalCreateUser(array('administer securitytxt', 'access administration pages'));
+  }
+
+  /**
+   * Test page access for various users.
+   */
+  function testPageAccess() {
+    // Anonymous user page access
+    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->assertResponse(403);
+
+
+    // Authenticated user page access
+    $this->drupalLogin($this->authenticated_user);
+
+    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->assertResponse(404);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
     $this->assertResponse(403);
 
     $this->drupalLogout();
@@ -84,6 +216,254 @@ class SecuritytxtDisabledTestCase extends DrupalWebTestCase {
     $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(200);
 
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('Help | Drupal'));
+    $this->assertLink(t('Security.txt'));
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('Security.txt | Drupal'));
+    $this->assertText(t('The Security.txt module provides an implementation of the new'));
+
+    $this->drupalLogout();
+
+
+    // Configure Security.txt module via direct database access
+    $enabled = TRUE;
+    $contact_email = 'contact@example.com';
+    $contact_phone = '+44-1632-123456';
+    $contact_url = 'https://example.com/contact';
+    $encryption_key_url = 'https://example.com/key';
+    $policy_url = 'https://example.com/policy';
+    $acknowledgement_url = 'https://example.com/acknowledgements';
+    $signature_text = 'THIS IS THE SIGNATURE TEXT';
+
+    $this->setConfigurationViaDatabase(
+      $enabled,
+      $contact_email, $contact_phone, $contact_url,
+      $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
+    );
+
+
+    // Repeat access tests now that Security.txt module has been configured
+
+    // Anonymous user page access
+    $this->checkSecurityTxtFile(
+      $enabled,
+      $contact_email, $contact_phone, $contact_url,
+      $encryption_key_url, $policy_url, $acknowledgement_url
+    );
+
+    $this->checkSecurityTxtSigFile($enabled, $signature_text);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->assertResponse(403);
+
+
+    // Authenticated user page access
+    $this->drupalLogin($this->authenticated_user);
+
+    $this->checkSecurityTxtFile(
+      $enabled,
+      $contact_email, $contact_phone, $contact_url,
+      $encryption_key_url, $policy_url, $acknowledgement_url
+    );
+
+    $this->checkSecurityTxtSigFile($enabled, $signature_text);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->assertResponse(403);
+
+    $this->drupalLogout();
+
+    // Administrator user page access
+    $this->drupalLogin($this->administrator_user);
+
+    $this->checkSecurityTxtFile(
+      $enabled,
+      $contact_email, $contact_phone, $contact_url,
+      $encryption_key_url, $policy_url, $acknowledgement_url
+    );
+
+    $this->checkSecurityTxtSigFile($enabled, $signature_text);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->assertResponse(200);
+
+    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->assertResponse(200);
+
+    $this->drupalGet(self::HELP_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('Help | Drupal'));
+    $this->assertLink(t('Security.txt'));
+
+    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->assertResponse(200);
+    $this->assertTitle(t('Security.txt | Drupal'));
+    $this->assertText(t('The Security.txt module provides an implementation of the new'));
+
     $this->drupalLogout();
   }
+
+  /**
+   * Test configure form.
+   */
+  function testConfigureForm() {
+    // Configuration values used for this test
+    $enabled = TRUE;
+    $contact_email = 'contact@example.com';
+    $contact_phone = '+44-1632-123456';
+    $contact_url = 'https://example.com/contact';
+    $encryption_key_url = 'https://example.com/key';
+    $policy_url = 'https://example.com/policy';
+    $acknowledgement_url = 'https://example.com/acknowledgements';
+    $signature_text = 'THIS IS THE SIGNATURE TEXT';
+
+    // Log in as administrator
+    $this->drupalLogin($this->administrator_user);
+
+    // Check that the security.txt file is disabled
+    $this->checkSecurityTxtFile(
+      FALSE,
+      $contact_email, $contact_phone, $contact_url,
+      $encryption_key_url, $policy_url, $acknowledgement_url
+    );
+
+    // Set the configuration via the form
+    $this->setConfigurationViaForm(
+      $enabled,
+      $contact_email, $contact_phone, $contact_url,
+      $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
+    );
+
+    // Check the security.txt and security.txt.sig files
+    $this->checkSecurityTxtFile(
+      $enabled,
+      $contact_email, $contact_phone, $contact_url,
+      $encryption_key_url, $policy_url, $acknowledgement_url
+    );
+
+    $this->checkSecurityTxtSigFile($enabled, $signature_text);
+  }
+
+  /**
+   * Set the Security.txt configuration via direct database access, not via
+   * the configuration form.
+   */
+  private function setConfigurationViaDatabase(
+    $enabled,
+    $contact_email, $contact_phone, $contact_url,
+    $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
+  ) {
+    $settings = array();
+    $settings['enabled'] = $enabled;
+    $settings['contact_email'] = $contact_email;
+    $settings['contact_phone'] = $contact_phone;
+    $settings['contact_url'] = $contact_url;
+    $settings['encryption_key_url'] = $encryption_key_url;
+    $settings['policy_url'] = $policy_url;
+    $settings['acknowledgement_url'] = $acknowledgement_url;
+    $settings['signature_text'] = $signature_text;
+
+    variable_set('securitytxt', $settings);
+  }
+
+  /**
+   * Set the Security.txt configuration via the configuration form.
+   */
+  private function setConfigurationViaForm(
+    $enabled,
+    $contact_email, $contact_phone, $contact_url,
+    $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
+  ) {
+    // Submit the configure form
+    $edit = array();
+    $edit['enabled'] = $enabled;
+    $edit['contact_email'] = $contact_email;
+    $edit['contact_phone'] = $contact_phone;
+    $edit['contact_url'] = $contact_url;
+    $edit['encryption_key_url'] = $encryption_key_url;
+    $edit['policy_url'] = $policy_url;
+    $edit['acknowledgement_url'] = $acknowledgement_url;
+    $this->drupalPost(
+      self::SECURITY_TXT_CONF_PATH,
+      $edit,
+      t('Save configuration')
+    );
+    $this->assertResponse(200);
+
+    // Submit the sign form
+    $edit = array();
+    $edit['signature_text'] = $signature_text;
+    $this->drupalPost(
+      self::SECURITY_TXT_CONF_SIGN_PATH,
+      $edit,
+      t('Save configuration')
+    );
+    $this->assertResponse(200);
+  }
+
+  /**
+   * Check the existance and content of the security.txt at
+   * .well-known/security.txt
+   */
+  private function checkSecurityTxtFile(
+    $enabled,
+    $contact_email, $contact_phone, $contact_url,
+    $encryption_key_url, $policy_url, $acknowledgement_url
+  ) {
+    $this->drupalGet(self::SECURITY_TXT_PATH);
+
+    if ($enabled) {
+      $this->assertResponse(200);
+      $this->assertText('Contact: ' . $contact_email);
+      $this->assertText('Contact: ' . $contact_phone);
+      $this->assertText('Contact: ' . $contact_url);
+      $this->assertText('Encryption: ' . $encryption_key_url);
+      $this->assertText('Policy: ' . $policy_url);
+      $this->assertText('Acknowledgement: ' . $acknowledgement_url);
+      $this->assertText('Signature: ' . url(self::SECURITY_TXT_SIG_PATH, array('absolute' => TRUE)));
+    } else {
+      $this->assertResponse(404);
+    }
+  }
+
+  /**
+   * Check the existance and content of the security.txt.sig at
+   * .well-known/security.txt.sig
+   */
+  private function checkSecurityTxtSigFile(
+    $enabled,
+    $signature_text
+  ) {
+    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+
+    if ($enabled) {
+      $this->assertResponse(200);
+      $this->assertText($signature_text);
+    } else {
+      $this->assertResponse(404);
+    }
+  }
+
 }
