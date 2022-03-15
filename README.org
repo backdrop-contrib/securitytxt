@@ -14,8 +14,8 @@ allows users and security researchers to securely disclose security
 vulnerabilities to you.
 
 * Installation
-This module should be installed in the usual way. Read about
-[[https://www.drupal.org/docs/7/extend/installing-modules][installing Drupal 7 modules]].
+This module should be installed in the usual way. Read about using
+[[https://docs.backdropcms.org/documentation/contributed-modules][contributed modules in Backdrop]].
 
 * Configuration
 Once you have installed this module you will want to perform the
@@ -32,7 +32,7 @@ very trusted roles.
 
 ** Security.txt configuration
 The Security.txt configuration page can be found under ~System~ on the
-Drupal configuration page. Fill in all the details you want to add to
+Backdrop configuration page. Fill in all the details you want to add to
 your ~security.txt~ file, then press the ~Save configuration~ button.
 You should then proceed to the ~Sign~ tab of the configuration form.
 

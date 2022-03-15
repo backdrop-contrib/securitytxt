@@ -8,31 +8,21 @@
 /**
  * Implements hook_install().
  *
- * @see http://api.drupal.org/api/drupal/modules--system--system.api.php/function/hook_install/7
+ * @see https://docs.backdropcms.org/api/backdrop/core%21modules%21system%21system.api.php/function/hook_install/1
  */
 function securitytxt_install() {
-  $settings = array();
-  $settings['enabled'] = FALSE;
-  $settings['contact_email'] = '';
-  $settings['contact_phone'] = '';
-  $settings['contact_url'] = '';
-  $settings['encryption_key_url'] = '';
-  $settings['policy_url'] = '';
-  $settings['acknowledgement_url'] = '';
-  $settings['signature_text'] = '';
-
-  variable_set('securitytxt', $settings);
-
-  /* Configure permissions */
-  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('view securitytxt'));
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('view securitytxt'));
+    /* Configure default permissions associated with this module */
+    user_role_grant_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
+    user_role_grant_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
 }
 
 /**
  * Implements hook_uninstall().
  *
- * @see http://api.drupal.org/api/drupal/modules--system--system.api.php/function/hook_uninstall/7
+ * @see https://docs.backdropcms.org/api/backdrop/core%21modules%21system%21system.api.php/function/hook_uninstall/1
  */
 function securitytxt_uninstall() {
-  variable_del('securitytxt');
+    /* Remove permissions associated with this module */
+    user_role_revoke_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
+    user_role_revoke_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
 }

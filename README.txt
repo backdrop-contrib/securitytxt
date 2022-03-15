@@ -1,22 +1,21 @@
-		      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-		       SECURITY.TXT MODULE README
+                      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                       SECURITY.TXT MODULE README
 
-
-			    Daniel J. R. May
-		      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                            Daniel J. R. May
+                      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 Table of Contents
 ─────────────────
 
-1 Introduction
-2 Installation
-3 Configuration
-.. 3.1 Permissions
-.. 3.2 Security.txt configuration
-.. 3.3 Security.txt signing
-4 Use
-5 Further reading
+1. Introduction
+2. Installation
+3. Configuration
+.. 1. Permissions
+.. 2. Security.txt configuration
+.. 3. Security.txt signing
+4. Use
+5. Further reading
 
 
 
@@ -35,12 +34,12 @@ Table of Contents
 2 Installation
 ══════════════
 
-  This module should be installed in the usual way. Read about
-  [installing Drupal 7 modules].
+  This module should be installed in the usual way. Read about using
+  [contributed modules in Backdrop].
 
 
-  [installing Drupal 7 modules]
-  https://www.drupal.org/docs/7/extend/installing-modules
+[contributed modules in Backdrop]
+<https://docs.backdropcms.org/documentation/contributed-modules>
 
 
 3 Configuration
@@ -66,9 +65,10 @@ Table of Contents
 ──────────────────────────────
 
   The Security.txt configuration page can be found under `System' on the
-  Drupal configuration page. Fill in all the details you want to add to
-  your `security.txt' file, then press the `Save configuration' button.
-  You should then proceed to the `Sign' tab of the configuration form.
+  Backdrop configuration page. Fill in all the details you want to add
+  to your `security.txt' file, then press the `Save configuration'
+  button.  You should then proceed to the `Sign' tab of the
+  configuration form.
 
 
 3.3 Security.txt signing
@@ -97,6 +97,6 @@ Table of Contents
   • Read the [draft RFC]
 
 
-  [security.txt standard] https://securitytxt.org/
+[security.txt standard] <https://securitytxt.org/>
 
-  [draft RFC] https://tools.ietf.org/html/draft-foudil-securitytxt-02
+[draft RFC] <https://tools.ietf.org/html/draft-foudil-securitytxt-02>
