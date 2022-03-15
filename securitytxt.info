@@ -1,6 +1,5 @@
 name = Security.txt
 description = Provides a security.txt file for your site.
 backdrop = 1.x
-package = Security
+type = module
 configure =  admin/config/system/securitytxt
-files[] = securitytxt.test
