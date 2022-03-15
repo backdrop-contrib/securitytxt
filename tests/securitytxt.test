@@ -8,38 +8,25 @@
 /**
  * Test case with the Security.txt module disabled.
  */
-class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
+class SecuritytxtModuleDisabledTestCase extends BackdropWebTestCase {
   const SECURITY_TXT_PATH = '.well-known/security.txt';
   const SECURITY_TXT_SIG_PATH = '.well-known/security.txt.sig';
   const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
   const SECURITY_TXT_CONF_SIGN_PATH = 'admin/config/system/securitytxt/sign';
-  const HELP_PATH = 'admin/help';
-  const SECURITY_TXT_HELP_PATH = 'admin/help/securitytxt';
 
   protected $authenticatedUser;
   protected $administratorUser;
 
   /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Security.txt module disabled',
-      'description' => 'Tests a standard drupal installation with Security.txt module disabled.',
-      'group' => 'Security.txt',
-    );
-  }
-
-  /**
    * Enable modules and create users with specific permissions.
    */
   public function setUp() {
-    // Add modules not enabled in a standard (not minimal) drupal install.
+    // Add modules not enabled in a standard (not minimal) backdrop install.
     parent::setUp();
 
     // Create users.
-    $this->authenticatedUser = $this->drupalCreateUser();
-    $this->administratorUser = $this->drupalCreateUser(array('access administration pages'));
+    $this->authenticatedUser = $this->backdropCreateUser();
+    $this->administratorUser = $this->backdropCreateUser(array('access administration pages'));
   }
 
   /**
@@ -47,75 +34,53 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
    */
   public function testPageAccess() {
     // Anonymous user page access.
-    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->backdropGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->backdropGet(self::SECURITY_TXT_SIG_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
 
     // Authenticated user page access.
-    $this->drupalLogin($this->authenticatedUser);
+    $this->backdropLogin($this->authenticatedUser);
 
-    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->backdropGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->backdropGet(self::SECURITY_TXT_SIG_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalLogout();
+    $this->backdropLogout();
 
     // Administrator user page access.
-    $this->drupalLogin($this->administratorUser);
+    $this->backdropLogin($this->administratorUser);
 
-    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->backdropGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->backdropGet(self::SECURITY_TXT_SIG_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(200);
-    $this->assertTitle(t('System | Drupal'));
+    $this->assertTitle(t('System | Backdrop'));
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(200);
-    $this->assertTitle(t('System | Drupal'));
+    $this->assertTitle(t('System | Backdrop'));
 
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(200);
-    $this->assertTitle(t('Help | Drupal'));
-    $this->assertNoLink(t('Security.txt'));
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
-    $this->assertResponse(200);
-    $this->assertTitle(t('Help | Drupal'));
-    $this->assertNoText(t('The Security.txt module provides an implementation of the new'));
-
-    $this->drupalLogout();
+    $this->backdropLogout();
   }
 
 }
@@ -123,38 +88,25 @@ class SecuritytxtModuleDisabledTestCase extends DrupalWebTestCase {
 /**
  * Test case with the Security.txt module enabled.
  */
-class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
+class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
   const SECURITY_TXT_PATH = '.well-known/security.txt';
   const SECURITY_TXT_SIG_PATH = '.well-known/security.txt.sig';
   const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
   const SECURITY_TXT_CONF_SIGN_PATH = 'admin/config/system/securitytxt/sign';
-  const HELP_PATH = 'admin/help';
-  const SECURITY_TXT_HELP_PATH = 'admin/help/securitytxt';
 
   protected $authenticatedUser;
   protected $administratorUser;
 
   /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Security.txt module enabled',
-      'description' => 'Tests a standard drupal installation with Security.txt module enabled.',
-      'group' => 'Security.txt',
-    );
-  }
-
-  /**
    * Enable modules and create users with specific permissions.
    */
   public function setUp() {
-    // Add modules not enabled in a standard (not minimal) drupal install.
+    // Add modules not enabled in a standard (not minimal) backdrop install.
     parent::setUp('securitytxt');
 
     // Create users.
-    $this->authenticatedUser = $this->drupalCreateUser(array('view securitytxt'));
-    $this->administratorUser = $this->drupalCreateUser(array('administer securitytxt', 'access administration pages'));
+    $this->authenticatedUser = $this->backdropCreateUser(array('view securitytxt'));
+    $this->administratorUser = $this->backdropCreateUser(array('administer securitytxt', 'access administration pages'));
   }
 
   /**
@@ -162,73 +114,51 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
    */
   public function testPageAccess() {
     // Anonymous user page access.
-    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->backdropGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->backdropGet(self::SECURITY_TXT_SIG_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
 
     // Authenticated user page access.
-    $this->drupalLogin($this->authenticatedUser);
+    $this->backdropLogin($this->authenticatedUser);
 
-    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->backdropGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->backdropGet(self::SECURITY_TXT_SIG_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalLogout();
+    $this->backdropLogout();
 
     // Administrator user page access.
-    $this->drupalLogin($this->administratorUser);
+    $this->backdropLogin($this->administratorUser);
 
-    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->backdropGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->backdropGet(self::SECURITY_TXT_SIG_PATH);
     $this->assertResponse(404);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(200);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(200);
 
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(200);
-    $this->assertTitle(t('Help | Drupal'));
-    $this->assertLink(t('Security.txt'));
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
-    $this->assertResponse(200);
-    $this->assertTitle(t('Security.txt | Drupal'));
-    $this->assertText(t('The Security.txt module provides an implementation of the new'));
-
-    $this->drupalLogout();
+    $this->backdropLogout();
 
     // Configure Security.txt module via direct database access.
     $enabled = TRUE;
@@ -256,20 +186,14 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
 
     $this->checkSecurityTxtSigFile($enabled, $signature_text);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
 
     // Authenticated user page access.
-    $this->drupalLogin($this->authenticatedUser);
+    $this->backdropLogin($this->authenticatedUser);
 
     $this->checkSecurityTxtFile(
       $enabled,
@@ -279,22 +203,16 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
 
     $this->checkSecurityTxtSigFile($enabled, $signature_text);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
 
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
-    $this->assertResponse(403);
-
-    $this->drupalLogout();
+    $this->backdropLogout();
 
     // Administrator user page access.
-    $this->drupalLogin($this->administratorUser);
+    $this->backdropLogin($this->administratorUser);
 
     $this->checkSecurityTxtFile(
       $enabled,
@@ -304,23 +222,13 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
 
     $this->checkSecurityTxtSigFile($enabled, $signature_text);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(200);
 
-    $this->drupalGet(self::SECURITY_TXT_CONF_SIGN_PATH);
+    $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(200);
 
-    $this->drupalGet(self::HELP_PATH);
-    $this->assertResponse(200);
-    $this->assertTitle(t('Help | Drupal'));
-    $this->assertLink(t('Security.txt'));
-
-    $this->drupalGet(self::SECURITY_TXT_HELP_PATH);
-    $this->assertResponse(200);
-    $this->assertTitle(t('Security.txt | Drupal'));
-    $this->assertText(t('The Security.txt module provides an implementation of the new'));
-
-    $this->drupalLogout();
+    $this->backdropLogout();
   }
 
   /**
@@ -338,7 +246,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $signature_text = 'THIS IS THE SIGNATURE TEXT';
 
     // Log in as administrator.
-    $this->drupalLogin($this->administratorUser);
+    $this->backdropLogin($this->administratorUser);
 
     // Check that the security.txt file is disabled.
     $this->checkSecurityTxtFile(
@@ -412,7 +320,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $edit['encryption_key_url'] = $encryption_key_url;
     $edit['policy_url'] = $policy_url;
     $edit['acknowledgement_url'] = $acknowledgement_url;
-    $this->drupalPost(
+    $this->backdropPost(
       self::SECURITY_TXT_CONF_PATH,
       $edit,
       t('Save configuration')
@@ -422,7 +330,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     // Submit the sign form.
     $edit = array();
     $edit['signature_text'] = $signature_text;
-    $this->drupalPost(
+    $this->backdropPost(
       self::SECURITY_TXT_CONF_SIGN_PATH,
       $edit,
       t('Save configuration')
@@ -445,7 +353,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $policy_url,
     $acknowledgement_url
   ) {
-    $this->drupalGet(self::SECURITY_TXT_PATH);
+    $this->backdropGet(self::SECURITY_TXT_PATH);
 
     if ($enabled) {
       $this->assertResponse(200);
@@ -472,7 +380,7 @@ class SecuritytxtModuleEnabledTestCase extends DrupalWebTestCase {
     $enabled,
     $signature_text
   ) {
-    $this->drupalGet(self::SECURITY_TXT_SIG_PATH);
+    $this->backdropGet(self::SECURITY_TXT_SIG_PATH);
 
     if ($enabled) {
       $this->assertResponse(200);

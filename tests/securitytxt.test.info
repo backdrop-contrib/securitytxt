@@ -1,0 +1,11 @@
+[SecuritytxtModuleDisabledTestCase]
+name = Security.txt module disabled
+description = Tests access to Security.txt module path access when the module is disabled.
+group = Security.txt
+file = securitytxt.test
+
+[SecuritytxtModuleEnabledTestCase]
+name = Security.txt module enabled
+description = Tests Security.txt module path access and form functionality.
+group = Security.txt
+file = securitytxt.test
