@@ -170,7 +170,7 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
     $acknowledgement_url = 'https://example.com/acknowledgements';
     $signature_text = 'THIS IS THE SIGNATURE TEXT';
 
-    $this->setConfigurationViaDatabase(
+    $this->setConfiguration(
       $enabled,
       $contact_email, $contact_phone, $contact_url,
       $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
@@ -275,7 +275,7 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
   /**
    * Set configuration via direct database access.
    */
-  private function setConfigurationViaDatabase(
+  private function setConfiguration(
     $enabled,
     $contact_email,
     $contact_phone,
@@ -295,7 +295,7 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
     $settings['acknowledgement_url'] = $acknowledgement_url;
     $settings['signature_text'] = $signature_text;
 
-    variable_set('securitytxt', $settings);
+    config_set_multiple('securitytxt.settings', $settings);
   }
 
   /**
