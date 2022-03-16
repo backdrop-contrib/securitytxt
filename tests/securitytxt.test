@@ -6,9 +6,9 @@
  */
 
 /**
- * Test case with the Security.txt module disabled.
+ * Base test case class.
  */
-class SecuritytxtModuleDisabledTestCase extends BackdropWebTestCase {
+class SecuritytxtBaseWebTestCase extends BackdropWebTestCase {
   const SECURITY_TXT_PATH = '.well-known/security.txt';
   const SECURITY_TXT_SIG_PATH = '.well-known/security.txt.sig';
   const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
@@ -16,7 +16,12 @@ class SecuritytxtModuleDisabledTestCase extends BackdropWebTestCase {
 
   protected $authenticatedUser;
   protected $administratorUser;
+}
 
+/**
+ * Test case with the Security.txt module disabled.
+ */
+class SecuritytxtDisabledTest extends SecuritytxtBaseWebTestCase {
   /**
    * Enable modules and create users with specific permissions.
    */
@@ -74,11 +79,11 @@ class SecuritytxtModuleDisabledTestCase extends BackdropWebTestCase {
 
     $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
     $this->assertResponse(200);
-    $this->assertTitle(t('System | Backdrop'));
+    $this->assertTitle(t('System | Backdrop CMS'));
 
     $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(200);
-    $this->assertTitle(t('System | Backdrop'));
+    $this->assertTitle(t('System | Backdrop CMS'));
 
     $this->backdropLogout();
   }
@@ -88,15 +93,7 @@ class SecuritytxtModuleDisabledTestCase extends BackdropWebTestCase {
 /**
  * Test case with the Security.txt module enabled.
  */
-class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
-  const SECURITY_TXT_PATH = '.well-known/security.txt';
-  const SECURITY_TXT_SIG_PATH = '.well-known/security.txt.sig';
-  const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
-  const SECURITY_TXT_CONF_SIGN_PATH = 'admin/config/system/securitytxt/sign';
-
-  protected $authenticatedUser;
-  protected $administratorUser;
-
+class SecuritytxtEnabledTest extends SecuritytxtBaseWebTestCase {
   /**
    * Enable modules and create users with specific permissions.
    */
@@ -110,9 +107,9 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
   }
 
   /**
-   * Test page access for various users.
+   * Test page access for various users when security.txt is turned off.
    */
-  public function testPageAccess() {
+  public function testPageAccessOff() {
     // Anonymous user page access.
     $this->backdropGet(self::SECURITY_TXT_PATH);
     $this->assertResponse(404);
@@ -159,7 +156,12 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
     $this->assertResponse(200);
 
     $this->backdropLogout();
+  }
 
+  /**
+   * Test page access for various users when security.txt is turned off.
+   */
+  public function testPageAccessOn() {
     // Configure Security.txt module via direct database access.
     $enabled = TRUE;
     $contact_email = 'contact@example.com';
@@ -170,20 +172,27 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
     $acknowledgement_url = 'https://example.com/acknowledgements';
     $signature_text = 'THIS IS THE SIGNATURE TEXT';
 
-    $this->setConfiguration(
-      $enabled,
-      $contact_email, $contact_phone, $contact_url,
-      $encryption_key_url, $policy_url, $acknowledgement_url, $signature_text
-    );
+    $settings = array();
+    $settings['enabled'] = TRUE;
+    $settings['contact_email'] = $contact_email;
+    $settings['contact_phone'] = $contact_phone;
+    $settings['contact_url'] = $contact_url;
+    $settings['encryption_key_url'] = $encryption_key_url;
+    $settings['policy_url'] = $policy_url;
+    $settings['acknowledgement_url'] = $acknowledgement_url;
+    $settings['signature_text'] = $signature_text;
+
+    config_set_multiple('securitytxt.settings', $settings);
+
 
     // Repeat access tests now that Security.txt module has been configured.
+
     // Anonymous user page access.
     $this->checkSecurityTxtFile(
       $enabled,
       $contact_email, $contact_phone, $contact_url,
       $encryption_key_url, $policy_url, $acknowledgement_url
     );
-
     $this->checkSecurityTxtSigFile($enabled, $signature_text);
 
     $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
@@ -191,6 +200,7 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
 
     $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
+
 
     // Authenticated user page access.
     $this->backdropLogin($this->authenticatedUser);
@@ -200,7 +210,6 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
       $contact_email, $contact_phone, $contact_url,
       $encryption_key_url, $policy_url, $acknowledgement_url
     );
-
     $this->checkSecurityTxtSigFile($enabled, $signature_text);
 
     $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
@@ -211,6 +220,7 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
 
     $this->backdropLogout();
 
+
     // Administrator user page access.
     $this->backdropLogin($this->administratorUser);
 
@@ -219,7 +229,6 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
       $contact_email, $contact_phone, $contact_url,
       $encryption_key_url, $policy_url, $acknowledgement_url
     );
-
     $this->checkSecurityTxtSigFile($enabled, $signature_text);
 
     $this->backdropGet(self::SECURITY_TXT_CONF_PATH);
@@ -270,32 +279,6 @@ class SecuritytxtModuleEnabledTestCase extends BackdropWebTestCase {
     );
 
     $this->checkSecurityTxtSigFile($enabled, $signature_text);
-  }
-
-  /**
-   * Set configuration via direct database access.
-   */
-  private function setConfiguration(
-    $enabled,
-    $contact_email,
-    $contact_phone,
-    $contact_url,
-    $encryption_key_url,
-    $policy_url,
-    $acknowledgement_url,
-    $signature_text
-  ) {
-    $settings = array();
-    $settings['enabled'] = $enabled;
-    $settings['contact_email'] = $contact_email;
-    $settings['contact_phone'] = $contact_phone;
-    $settings['contact_url'] = $contact_url;
-    $settings['encryption_key_url'] = $encryption_key_url;
-    $settings['policy_url'] = $policy_url;
-    $settings['acknowledgement_url'] = $acknowledgement_url;
-    $settings['signature_text'] = $signature_text;
-
-    config_set_multiple('securitytxt.settings', $settings);
   }
 
   /**

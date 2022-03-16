@@ -7,8 +7,6 @@
 
 /**
  * Implements hook_install().
- *
- * @see https://docs.backdropcms.org/api/backdrop/core%21modules%21system%21system.api.php/function/hook_install/1
  */
 function securitytxt_install() {
     /* Configure default permissions associated with this module */
@@ -18,8 +16,6 @@ function securitytxt_install() {
 
 /**
  * Implements hook_uninstall().
- *
- * @see https://docs.backdropcms.org/api/backdrop/core%21modules%21system%21system.api.php/function/hook_uninstall/1
  */
 function securitytxt_uninstall() {
     /* Remove permissions associated with this module */

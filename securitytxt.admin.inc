@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file
+ * Forms.
+ *
+ * This file provides the form related functions for the
+ * 'admin/config/system/securitytxt{,/file,/sign}' paths.
+ */
 
 /**
  * Security.txt file configuration form.
@@ -30,7 +37,7 @@ function securitytxt_file_form() {
     '#type' => 'textfield',
     '#title' => t('Phone'),
     '#default_value' => config_get('securitytxt.settings', 'contact_phone'),
-    '#description' => t('Use full international format e.g. <kbd>+1-201-555-0123</kbd>. Leave it blank if you do not want to provide a phone number.'),
+    '#description' => t('Use the full international format like <kbd>+1-201-555-0123</kbd>. Leave it blank if you do not want to provide a phone number.'),
   );
   $form['contact']['contact_url'] = array(
     '#type' => 'textfield',
