@@ -199,7 +199,7 @@ function securitytxt_sign_form() {
     '#type' => 'markup',
     '#markup' => t(
       '<ol><li><a href="@download" download="security.txt">Download</a> your security.txt file.</li><li><p>Sign your security.txt file with the encryption key you specified in your security.txt file. You can do this with GPG with a command like:</p><p><kbd>gpg -u KEYID --output security.txt.sig  --armor --detach-sig security.txt</kbd></p></li><li>Paste the contents of the <kbd>security.txt.sig</kbd> file into the text box below.</li></ol>',
-      array('@download' => url('.well-known/security.txt')
+      array('@download' => url('.well-known/security.txt'))
     ),
   );
   $form['signature_text'] = array(
