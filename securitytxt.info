@@ -2,4 +2,5 @@ name = Security.txt
 description = Provides a security.txt file for your site.
 backdrop = 1.x
 type = module
+tags[] = System
 configure =  admin/config/system/securitytxt
