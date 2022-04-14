@@ -5,37 +5,41 @@ The `securitytxt` module provides the [security.txt
 standard](https://securitytxt.org/) for Backdrop CMS.
 
 Its purpose is to provide a standardised way to document your
-website’s security contact details and policy. This allows users and
-security researchers to securely disclose vulnerabilities to you.
+website’s security contact details and policy. This allows people to
+securely disclose vulnerabilities to you.
 
 Requirements
 ------------
 
-You must currently replace your `.htaccess` file with the one provided
-by this module at `htaccess/modified.htaccess`. This will be required
-until a fix for for the following issue [Modify .htaccess to allow
-backdrop to serve .well-known
-URIs](https://github.com/backdrop/backdrop-issues/issues/5583#issue-1200228154)
+You must replace your `.htaccess` file with the one provided by this
+module at `htaccess/modified.htaccess`. This will be required until a
+fix for "[issue
+5583](https://github.com/backdrop/backdrop-issues/issues/5583#issue-1200228154)"
 has made its way into your version of backdrop.
 
 Installation
 ------------
 
-- Install this module in the usual way, seee the [contributed
+- Install this module in the usual way, see the [contributed
   modules](https://docs.backdropcms.org/documentation/contributed-modules)
   of the user guide for details.
 
+- Replace your `.htaccess` file with the one provided by this module
+  at `htaccess/modified.htaccess`, e.g. `cp
+  PATH_TO_CONTRIB_MODULES/securitytxt/htaccess/modified.htaccess
+  PATH_TO_DOCUMENT_ROOT/.htacess`.
+  
 - Visit the configuration page under Administration > Configuration > System >
   Security.txt (`admin/config/system/securitytxt`) and enter the
-  required information to create your `security.txt` file.
+  required information to create your security.txt file.
 
-- Once you have created your `security.txt` file you should provide a
+- Once you have created your security.txt file you should provide a
   signature for it by visiting Administration > Configuration > System >
   Sign (`admin/config/system/securitytxt/sign`) and following the
   instructions.
   
-- Once you have completed all this configuration your `security.txt`
-  and `security.txt.sig` files will be available at the following standard URLs:
+- Once you have completed all this configuration your security.txt
+  and security.txt.sig files will be available at the following standard URLs:
   - `/.well-known/security.txt`
   - `/.well-known/security.txt.sig`
 
