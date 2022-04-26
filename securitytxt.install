@@ -9,16 +9,16 @@
  * Implements hook_install().
  */
 function securitytxt_install() {
-    /* Configure default permissions associated with this module */
-    user_role_grant_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
-    user_role_grant_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
+  /* Configure default permissions associated with this module */
+  user_role_grant_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
+  user_role_grant_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
 }
 
 /**
  * Implements hook_uninstall().
  */
 function securitytxt_uninstall() {
-    /* Remove permissions associated with this module */
-    user_role_revoke_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
-    user_role_revoke_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
+  /* Remove permissions associated with this module */
+  user_role_revoke_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
+  user_role_revoke_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
 }

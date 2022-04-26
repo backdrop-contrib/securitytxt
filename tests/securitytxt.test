@@ -14,14 +14,27 @@ class SecuritytxtBaseWebTestCase extends BackdropWebTestCase {
   const SECURITY_TXT_CONF_PATH = 'admin/config/system/securitytxt';
   const SECURITY_TXT_CONF_SIGN_PATH = 'admin/config/system/securitytxt/sign';
 
+  /**
+   * Authenticated user with no special permissions.
+   *
+   * @var object
+   */
   protected $authenticatedUser;
+
+  /**
+   * Administrator user with all relevant permissions.
+   *
+   * @var object
+   */
   protected $administratorUser;
+
 }
 
 /**
  * Test case with the Security.txt module disabled.
  */
 class SecuritytxtDisabledTest extends SecuritytxtBaseWebTestCase {
+
   /**
    * Enable modules and create users with specific permissions.
    */
@@ -94,6 +107,7 @@ class SecuritytxtDisabledTest extends SecuritytxtBaseWebTestCase {
  * Test case with the Security.txt module enabled.
  */
 class SecuritytxtEnabledTest extends SecuritytxtBaseWebTestCase {
+
   /**
    * Enable modules and create users with specific permissions.
    */
@@ -103,7 +117,12 @@ class SecuritytxtEnabledTest extends SecuritytxtBaseWebTestCase {
 
     // Create users.
     $this->authenticatedUser = $this->backdropCreateUser(array('view securitytxt'));
-    $this->administratorUser = $this->backdropCreateUser(array('administer securitytxt', 'access administration pages'));
+    $this->administratorUser = $this->backdropCreateUser(
+      array(
+        'administer securitytxt',
+        'access administration pages',
+      )
+    );
   }
 
   /**
@@ -184,8 +203,7 @@ class SecuritytxtEnabledTest extends SecuritytxtBaseWebTestCase {
 
     config_set_multiple('securitytxt.settings', $settings);
 
-
-    // Repeat access tests now that Security.txt module has been configured.
+    /* Repeat access tests now that Security.txt module has been configured. */
 
     // Anonymous user page access.
     $this->checkSecurityTxtFile(
@@ -200,7 +218,6 @@ class SecuritytxtEnabledTest extends SecuritytxtBaseWebTestCase {
 
     $this->backdropGet(self::SECURITY_TXT_CONF_SIGN_PATH);
     $this->assertResponse(403);
-
 
     // Authenticated user page access.
     $this->backdropLogin($this->authenticatedUser);
@@ -219,7 +236,6 @@ class SecuritytxtEnabledTest extends SecuritytxtBaseWebTestCase {
     $this->assertResponse(403);
 
     $this->backdropLogout();
-
 
     // Administrator user page access.
     $this->backdropLogin($this->administratorUser);
