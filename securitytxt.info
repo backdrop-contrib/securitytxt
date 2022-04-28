@@ -4,4 +4,3 @@ backdrop = 1.x
 type = module
 tags[] = System
 configure =  admin/config/system/securitytxt
-version = 0.1.0
