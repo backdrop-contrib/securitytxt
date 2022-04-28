@@ -14,10 +14,12 @@
  * @ingroup forms
  */
 function securitytxt_file_form() {
+  $config = config('securitytxt.settings');
+
   $form['enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable the security.txt file for your site'),
-    '#default_value' => config_get('securitytxt.settings', 'enabled'),
+    '#default_value' => $config->get('enabled'),
     '#description' => t('When enabled the security.txt file will be accessible to all users with the "view securitytxt" permission, you will almost certinaly want to give this permission to everyone i.e. authenticated and anonymous users.'),
   );
 
@@ -31,19 +33,19 @@ function securitytxt_file_form() {
   $form['contact']['contact_email'] = array(
     '#type' => 'textfield',
     '#title' => t('Email'),
-    '#default_value' => config_get('securitytxt.settings', 'contact_email'),
+    '#default_value' => $config->get('contact_email'),
     '#description' => t('Typically this would be of the form <kbd>security@example.com</kbd>. Leave it blank if you do not want to provide an email address.'),
   );
   $form['contact']['contact_phone'] = array(
     '#type' => 'textfield',
     '#title' => t('Phone'),
-    '#default_value' => config_get('securitytxt.settings', 'contact_phone'),
+    '#default_value' => $config->get('contact_phone'),
     '#description' => t('Use the full international format like <kbd>+1-201-555-0123</kbd>. Leave it blank if you do not want to provide a phone number.'),
   );
   $form['contact']['contact_url'] = array(
     '#type' => 'textfield',
     '#title' => t('URL'),
-    '#default_value' => config_get('securitytxt.settings', 'contact_url'),
+    '#default_value' => $config->get('contact_url'),
     '#description' => t('The URL of a contact page which should be loaded over HTTPS. Leave it blank if you do not want to provide a contact page.'),
   );
 
@@ -57,7 +59,7 @@ function securitytxt_file_form() {
   $form['encryption']['encryption_key_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Public key URL'),
-    '#default_value' => config_get('securitytxt.settings', 'encryption_key_url'),
+    '#default_value' => $config->get('encryption_key_url'),
     '#description' => t('The URL of page which contains your public key. The page should be loaded over HTTPS.'),
   );
 
@@ -71,7 +73,7 @@ function securitytxt_file_form() {
   $form['policy']['policy_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Security policy URL'),
-    '#default_value' => config_get('securitytxt.settings', 'policy_url'),
+    '#default_value' => $config->get('policy_url'),
     '#description' => t('The URL of a page which provides details of your security and/or disclosure policy. Leave it blank if you do not have such a page.'),
   );
 
@@ -85,7 +87,7 @@ function securitytxt_file_form() {
   $form['acknowledgement']['acknowledgement_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Acknowledgements page URL'),
-    '#default_value' => config_get('securitytxt.settings', 'acknowledgement_url'),
+    '#default_value' => $config->get('acknowledgement_url'),
     '#description' => t('The URL of your security acknowledgements page. Leave it blank if you do not have such a page.'),
   );
 
@@ -147,13 +149,15 @@ function securitytxt_file_form_validate($form, &$form_state) {
  * @ingroup forms
  */
 function securitytxt_file_form_submit($form, &$form_state) {
-  config_set('securitytxt.settings', 'enabled', $form_state['values']['enabled']);
-  config_set('securitytxt.settings', 'contact_email', $form_state['values']['contact_email']);
-  config_set('securitytxt.settings', 'contact_phone', $form_state['values']['contact_phone']);
-  config_set('securitytxt.settings', 'contact_url', $form_state['values']['contact_url']);
-  config_set('securitytxt.settings', 'encryption_key_url', $form_state['values']['encryption_key_url']);
-  config_set('securitytxt.settings', 'policy_url', $form_state['values']['policy_url']);
-  config_set('securitytxt.settings', 'acknowledgement_url', $form_state['values']['acknowledgement_url']);
+  $config = config('securitytxt.settings');
+  $config->set('enabled', $form_state['values']['enabled']);
+  $config->set('contact_email', $form_state['values']['contact_email']);
+  $config->set('contact_phone', $form_state['values']['contact_phone']);
+  $config->set('contact_url', $form_state['values']['contact_url']);
+  $config->set('encryption_key_url', $form_state['values']['encryption_key_url']);
+  $config->set('policy_url', $form_state['values']['policy_url']);
+  $config->set('acknowledgement_url', $form_state['values']['acknowledgement_url']);
+  $config->save();
 
   /* Warn if contact URL is not loaded over HTTPS */
   if ($form_state['values']['contact_url'] != '' && substr($form_state['values']['contact_url'], 0, 8) !== 'https://') {
@@ -182,7 +186,9 @@ function securitytxt_file_form_submit($form, &$form_state) {
  * @ingroup forms
  */
 function securitytxt_sign_form() {
-  if (!config_get('securitytxt.settings', 'enabled')) {
+  $config = config('securitytxt.settings');
+
+  if (!$config->get('enabled')) {
     $form['instructions'] = array(
       '#type' => 'markup',
       '#markup' => '<p>' .
@@ -206,7 +212,7 @@ function securitytxt_sign_form() {
   $form['signature_text'] = array(
     '#type' => 'textarea',
     '#title' => t('Signature'),
-    '#default_value' => config_get('securitytxt.settings', 'signature_text'),
+    '#default_value' => $config->get('signature_text'),
     '#rows' => 20,
   );
 

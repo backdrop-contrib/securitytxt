@@ -12,39 +12,41 @@
  * Security.txt file page.
  */
 function securitytxt_file_page() {
-  if (!config_get('securitytxt.settings', 'enabled')) {
+  $config = config('securitytxt.settings');
+
+  if (!$config->get('enabled')) {
     backdrop_not_found();
     backdrop_exit();
   }
 
   $content = '';
 
-  $contact_email = config_get('securitytxt.settings', 'contact_email');
+  $contact_email = $config->get('contact_email');
   if ($contact_email) {
     $content .= 'Contact: ' . $contact_email . "\n";
   }
 
-  $contact_phone = config_get('securitytxt.settings', 'contact_phone');
+  $contact_phone = $config->get('contact_phone');
   if ($contact_phone) {
     $content .= 'Contact: ' . $contact_phone . "\n";
   }
 
-  $contact_url = config_get('securitytxt.settings', 'contact_url');
+  $contact_url = $config->get('contact_url');
   if ($contact_url) {
     $content .= 'Contact: ' . $contact_url . "\n";
   }
 
-  $encryption_key_url = config_get('securitytxt.settings', 'encryption_key_url');
+  $encryption_key_url = $config->get('encryption_key_url');
   if ($encryption_key_url) {
     $content .= 'Encryption: ' . $encryption_key_url . "\n";
   }
 
-  $policy_url = config_get('securitytxt.settings', 'policy_url');
+  $policy_url = $config->get('policy_url');
   if ($policy_url) {
     $content .= 'Policy: ' . $policy_url . "\n";
   }
 
-  $acknowledgement_url = config_get('securitytxt.settings', 'acknowledgement_url');
+  $acknowledgement_url = $config->get('acknowledgement_url');
   if ($acknowledgement_url) {
     $content .= 'Acknowledgement: ' . $acknowledgement_url . "\n";
   }
@@ -61,8 +63,10 @@ function securitytxt_file_page() {
  * Security.txt signature page.
  */
 function securitytxt_signature_page() {
-  $enabled = config_get('securitytxt.settings', 'enabled');
-  $signature_text = config_get('securitytxt.settings', 'signature_text');
+  $config = config('securitytxt.settings');
+
+  $enabled = $config->get('enabled');
+  $signature_text = $config->get('signature_text');
 
   if ($enabled && $signature_text) {
     backdrop_add_http_header('Content-Type', 'text/plain');
