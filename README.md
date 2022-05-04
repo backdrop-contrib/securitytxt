@@ -11,11 +11,15 @@ securely disclose vulnerabilities to you.
 Requirements
 ------------
 
-You must replace your `.htaccess` file with the one provided by this
-module at `htaccess/modified.htaccess`. This will be required until a
-fix for "[issue
-5583](https://github.com/backdrop/backdrop-issues/issues/5583#issue-1200228154)"
-has made its way into your version of backdrop.
+If you are using backdrop version 1.21.5 or later then there are no
+special requirements.
+
+However, if you are using backdrop version 1.21.4 or earlier then
+you must replace your `.htaccess` file with the one provided by this
+module at `htaccess/modified.htaccess`. This is because the original
+`.htaccess` file does not allow backdrop to serve pages starting with
+the `.well-known`path, see [issue
+5583](https://github.com/backdrop/backdrop-issues/issues/5583#issue-1200228154).
 
 **Note:** `htaccess/original.htaccess` is a copy of the default
 `.htaccess` file from backdrop version 1.21.4 which
@@ -29,7 +33,8 @@ Installation
   modules](https://docs.backdropcms.org/documentation/contributed-modules)
   of the user guide for details.
 
-- Replace your `.htaccess` file with the one provided by this module
+- If you are using backdrop version 1.21.4 or earlier then you must
+  replace your `.htaccess` file with the one provided by this module
   at `htaccess/modified.htaccess`, e.g. `cp
   PATH_TO_CONTRIB_MODULES/securitytxt/htaccess/modified.htaccess
   PATH_TO_DOCUMENT_ROOT/.htacess`.
@@ -47,20 +52,6 @@ Installation
   and security.txt.sig files will be available at the following standard URLs:
   - `/.well-known/security.txt`
   - `/.well-known/security.txt.sig`
-
-<!-- Do not include if you have not created a wiki page. 
-Documentation 
--------------
-
-Additional documentation is located in [the -->
-<!-- Wiki](https://github.com/backdrop-contrib/foo-project/wiki/Documentation).
-
-# Further reading
-
--   Learn more about the [security.txt standard](https://securitytxt.org/)
--   Read the [draft RFC](https://tools.ietf.org/html/draft-foudil-securitytxt-02)
-
--->
 
 Issues
 ------
@@ -84,3 +75,9 @@ License
 
 This project is GPL v2 software. See the LICENSE.txt file in this
 directory for complete text.
+
+Further reading
+---------------
+
+- Learn more about the [security.txt standard](https://securitytxt.org/)
+- Read the [draft RFC](https://tools.ietf.org/html/draft-foudil-securitytxt-02)
