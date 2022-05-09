@@ -3,8 +3,12 @@
   "contact_email": "",
   "contact_phone": "",
   "contact_url": "",
+  "expires_timestamp": 0,
   "encryption_key_url": "",
-  "policy_url": "",
   "acknowledgement_url": "",
+  "preferred_languages": [],
+  "canonical": "",  
+  "policy_url": "",
+  "hiring": "",
   "signature_text": ""
 }

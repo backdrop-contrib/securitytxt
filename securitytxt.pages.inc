@@ -36,6 +36,11 @@ function securitytxt_file_page() {
     $content .= 'Contact: ' . $contact_url . "\n";
   }
 
+  $expires_timestamp = $config->get('expires_timestamp');
+  if ($expires_timestamp) {
+    $content .= 'Expires: ' . date('c', $expires_timestamp) . "\n";
+  }
+
   $encryption_key_url = $config->get('encryption_key_url');
   if ($encryption_key_url) {
     $content .= 'Encryption: ' . $encryption_key_url . "\n";

@@ -49,6 +49,30 @@ function securitytxt_file_form() {
     '#description' => t('The URL of a contact page which should be loaded over HTTPS. Leave it blank if you do not want to provide a contact page.'),
   );
 
+  $form['expires'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Expires'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#description' => t('The date and time after which the content of the security.txt file should be considered stale. Make sure you update this value periodically and keep your file under review.'),
+  );
+  $form['expires']['expires_datetime'] = array(
+    '#type' => 'html_datetime',
+    '#title' => t('Expires'),
+    '#default_value' => array(
+      'date' => format_date($config->get('expires_timestamp'), 'custom', DATE_FORMAT_DATE),
+      'time' => format_date($config->get('expires_timestamp'), 'custom', DATE_FORMAT_TIME),
+    ),
+    '#attributes' => array(
+      'date' => array(
+        'min' => format_date(REQUEST_TIME, 'custom', DATE_FORMAT_DATE),
+        'max' => format_date(REQUEST_TIME + 5 * SECURITYTXT_SECONDS_IN_366_DAYS, 'custom', DATE_FORMAT_DATE),
+      ),
+    ),
+    '#required' => TRUE,
+    '#description' => t('The date and time after which the content of the security.txt file should be considered stale.'),
+  );
+
   $form['encryption'] = array(
     '#type' => 'fieldset',
     '#title' => t('Encryption'),
@@ -109,6 +133,7 @@ function securitytxt_file_form_validate($form, &$form_state) {
   $contact_email = $form_state['values']['contact_email'];
   $contact_phone = $form_state['values']['contact_phone'];
   $contact_url = $form_state['values']['contact_url'];
+  $expires_timestamp = _securitytxt_expires_timestamp($form_state);
   $encryption_key_url = $form_state['values']['encryption_key_url'];
   $policy_url = $form_state['values']['policy_url'];
   $acknowledgement_url = $form_state['values']['acknowledgement_url'];
@@ -128,6 +153,14 @@ function securitytxt_file_form_validate($form, &$form_state) {
   /* When enabled, check that at least one contact field is specified. */
   if ($enabled && $contact_email == '' && $contact_phone == '' && $contact_url == '') {
     form_set_error('contact', t('You must specify at least one method of contact.'));
+  }
+
+  if ($enabled && $expires_timestamp < REQUEST_TIME) {
+    form_set_error('expires_datetime', t('Your expiry date must not be in the past.'));
+  }
+
+  if ($enabled && $expires_timestamp > REQUEST_TIME + 5 * SECURITYTXT_SECONDS_IN_366_DAYS) {
+    form_set_error('expires_datetime', t('Your expiry date should not be more than 5 years into the future, 1 year is the recommended maximum.'));
   }
 
   if ($encryption_key_url != '' && valid_url($encryption_key_url, TRUE) == FALSE) {
@@ -153,11 +186,18 @@ function securitytxt_file_form_submit($form, &$form_state) {
   $config->set('enabled', $form_state['values']['enabled']);
   $config->set('contact_email', $form_state['values']['contact_email']);
   $config->set('contact_phone', $form_state['values']['contact_phone']);
+  $expires_timestamp = _securitytxt_expires_timestamp($form_state);
+  $config->set('expires_timestamp', $expires_timestamp);
   $config->set('contact_url', $form_state['values']['contact_url']);
   $config->set('encryption_key_url', $form_state['values']['encryption_key_url']);
   $config->set('policy_url', $form_state['values']['policy_url']);
   $config->set('acknowledgement_url', $form_state['values']['acknowledgement_url']);
   $config->save();
+
+  /* Warn if expires in more than 366 days into the future */
+  if ($expires_timestamp > REQUEST_TIME + SECURITYTXT_SECONDS_IN_366_DAYS) {
+    backdrop_set_message(t('It is recommended that your expiry date be less than a year into the future.'), 'warning');
+  }
 
   /* Warn if contact URL is not loaded over HTTPS */
   if ($form_state['values']['contact_url'] != '' && substr($form_state['values']['contact_url'], 0, 8) !== 'https://') {
@@ -240,6 +280,18 @@ function securitytxt_sign_form_validate($form, &$form_state) {
  */
 function securitytxt_sign_form_submit($form, &$form_state) {
   config_set('securitytxt.settings', 'signature_text', $form_state['values']['signature_text']);
+}
+
+/**
+ * Return the expires value as a unix timestamp from the $form_state.
+ */
+function _securitytxt_expires_timestamp(&$form_state) {
+  $date = $form_state['values']['expires_datetime']['date'];
+  $time = $form_state['values']['expires_datetime']['time'];
+  $account = user_load($GLOBALS['user']->uid);
+  $object = new BackdropDateTime($date . ' ' . $time, $account->timezone);
+
+  return $object->getTimestamp();
 }
 
 /**

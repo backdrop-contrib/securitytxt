@@ -12,6 +12,9 @@ function securitytxt_install() {
   /* Configure default permissions associated with this module */
   user_role_grant_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
   user_role_grant_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
+
+  /* Update default configuration values */
+  _securitytxt_update_configuration();
 }
 
 /**
@@ -21,4 +24,37 @@ function securitytxt_uninstall() {
   /* Remove permissions associated with this module */
   user_role_revoke_permissions(BACKDROP_ANONYMOUS_ROLE, array('view securitytxt'));
   user_role_revoke_permissions(BACKDROP_AUTHENTICATED_ROLE, array('view securitytxt'));
+}
+
+/**
+ * Update default configuration values.
+ */
+function _securitytxt_update_configuration() {
+  $updated = FALSE;
+  $config = config('securitytxt.settings');
+
+  if (empty($config->expires_timestamp)) {
+    // Set the default expires timestamp to be one year from now.
+    $config->set('expires_timestamp', REQUEST_TIME + SECURITYTXT_SECONDS_IN_364_DAYS);
+    $updated = TRUE;
+  }
+
+  if (empty($config->preferred_languages)) {
+    $config->set('preferred_languages', array());
+    $updated = TRUE;
+  }
+
+  if (empty($config->canonical)) {
+    $config->set('canonical', url('.well-known/security.txt', array('absolute' => TRUE)));
+    $updated = TRUE;
+  }
+
+  if (empty($config->hiring)) {
+    $config->set('hiring', '');
+    $updated = TRUE;
+  }
+
+  if ($updated) {
+    $config->save();
+  }
 }

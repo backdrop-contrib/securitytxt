@@ -7,6 +7,9 @@
  * @see https://securitytxt.org/
  */
 
+define('SECURITYTXT_SECONDS_IN_364_DAYS', 31449600);
+define('SECURITYTXT_SECONDS_IN_366_DAYS', 31622400);
+
 /**
  * Implements hook_menu().
  */
