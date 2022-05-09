@@ -24,11 +24,10 @@ function securitytxt_file_form() {
   );
 
   $form['contact'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Contact'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#description' => t('You must provide at least one means of contact: email, phone or contact page URL.'),
+    '#type' => 'details',
+    '#summary' => t('Contact'),
+    '#open' => TRUE,
+    '#details' => t('You must provide at least one means of contact: email, phone or contact page URL.'),
   );
   $form['contact']['contact_email'] = array(
     '#type' => 'textfield',
@@ -50,11 +49,10 @@ function securitytxt_file_form() {
   );
 
   $form['expires'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Expires'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#description' => t('The date and time after which the content of the security.txt file should be considered stale. Make sure you update this value periodically and keep your file under review.'),
+    '#type' => 'details',
+    '#summary' => t('Expires'),
+    '#open' => TRUE,
+    '#details' => t('The date and time after which the content of the security.txt file should be considered stale. Make sure you update this value periodically and keep your file under review.'),
   );
   $form['expires']['expires_datetime'] = array(
     '#type' => 'html_datetime',
@@ -74,11 +72,9 @@ function securitytxt_file_form() {
   );
 
   $form['encryption'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Encryption'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#description' => t('Allow people to send you encrypted messages by providing your public key.'),
+    '#type' => 'details',
+    '#summary' => t('Encryption'),
+    '#details' => t('Allow people to send you encrypted messages by providing your public key.'),
   );
   $form['encryption']['encryption_key_url'] = array(
     '#type' => 'textfield',
@@ -88,11 +84,9 @@ function securitytxt_file_form() {
   );
 
   $form['acknowledgement'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Acknowledgements'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#description' => t('A security acknowldgements page should list the individuals or companies that have disclosed security vulnerabilities and worked with you to fix them.'),
+    '#type' => 'details',
+    '#summary' => t('Acknowledgements'),
+    '#details' => t('A security acknowldgements page should list the individuals or companies that have disclosed security vulnerabilities and worked with you to fix them.'),
   );
   $form['acknowledgement']['acknowledgement_url'] = array(
     '#type' => 'textfield',
@@ -102,11 +96,9 @@ function securitytxt_file_form() {
   );
 
   $form['languages'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Preferred languages'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#description' => t('Select the languages which your security team speaks, you may select more than one language.'),
+    '#type' => 'details',
+    '#summary' => t('Preferred languages'),
+    '#details' => t('Select the languages which your security team speaks, you may select more than one language.'),
   );
   $form['languages']['preferred_languages'] = array(
     '#type' => 'select',
@@ -118,11 +110,9 @@ function securitytxt_file_form() {
   );
 
   $form['canonical'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Canonical'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#description' => t('The URLs for accessing your security.txt file. It is important to include this if you are digitally signing the security.txt file, so that the location of the security.txt file can be digitally signed too.'),
+    '#type' => 'details',
+    '#summary' => t('Canonical'),
+    '#details' => t('The URLs for accessing your security.txt file. It is important to include this if you are digitally signing the security.txt file, so that the location of the security.txt file can be digitally signed too.'),
   );
   $form['canonical']['canonical_url'] = array(
     '#type' => 'textfield',
@@ -132,11 +122,9 @@ function securitytxt_file_form() {
   );
 
   $form['policy'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Policy'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#description' => t('A security and/or disclosure policy can help security researchers understand what you are looking for and how to report security vulnerabilities.'),
+    '#type' => 'details',
+    '#summary' => t('Policy'),
+    '#details' => t('A security and/or disclosure policy can help security researchers understand what you are looking for and how to report security vulnerabilities.'),
   );
   $form['policy']['policy_url'] = array(
     '#type' => 'textfield',
@@ -146,11 +134,9 @@ function securitytxt_file_form() {
   );
 
   $form['hiring'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Hiring'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#description' => t('A link to any security-related job openings in your organisation.'),
+    '#type' => 'details',
+    '#summary' => t('Hiring'),
+    '#details' => t('A link to any security-related job openings in your organisation.'),
   );
   $form['hiring']['hiring_url'] = array(
     '#type' => 'textfield',
