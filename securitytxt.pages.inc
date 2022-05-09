@@ -23,7 +23,7 @@ function securitytxt_file_page() {
 
   $contact_email = $config->get('contact_email');
   if ($contact_email) {
-    $content .= 'Contact: ' . $contact_email . "\n";
+    $content .= 'Contact: mailto:' . $contact_email . "\n";
   }
 
   $contact_phone = $config->get('contact_phone');
