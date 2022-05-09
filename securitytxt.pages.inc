@@ -46,14 +46,29 @@ function securitytxt_file_page() {
     $content .= 'Encryption: ' . $encryption_key_url . "\n";
   }
 
+  $acknowledgement_url = $config->get('acknowledgement_url');
+  if ($acknowledgement_url) {
+    $content .= 'Acknowledgement: ' . $acknowledgement_url . "\n";
+  }
+
+  $preferred_languages = $config->get('preferred_languages');
+  if (is_array($preferred_languages) && count($preferred_languages) >= 1) {
+    $content .= 'Preferred-Languages: ' . implode(', ', $preferred_languages) . "\n";
+  }
+
+  $canonical_url = $config->get('canonical_url');
+  if ($canonical_url) {
+    $content .= 'Canonical: ' . $canonical_url . "\n";
+  }
+
   $policy_url = $config->get('policy_url');
   if ($policy_url) {
     $content .= 'Policy: ' . $policy_url . "\n";
   }
 
-  $acknowledgement_url = $config->get('acknowledgement_url');
-  if ($acknowledgement_url) {
-    $content .= 'Acknowledgement: ' . $acknowledgement_url . "\n";
+  $hiring_url = $config->get('hiring_url');
+  if ($hiring_url) {
+    $content .= 'Hiring: ' . $hiring_url . "\n";
   }
 
   $signature_url = url('.well-known/security.txt.sig', array('absolute' => TRUE));

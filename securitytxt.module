@@ -85,3 +85,10 @@ function securitytxt_config_info() {
 
   return $prefixes;
 }
+
+/**
+ * Returns the default canonical URL.
+ */
+function _securitytxt_default_canonical_url() {
+  return url('.well-known/security.txt', array('absolute' => TRUE));
+}

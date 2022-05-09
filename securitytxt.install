@@ -45,7 +45,7 @@ function _securitytxt_update_configuration() {
   }
 
   if (empty($config->canonical)) {
-    $config->set('canonical', url('.well-known/security.txt', array('absolute' => TRUE)));
+    $config->set('canonical', _securitytxt_default_canonical_url());
     $updated = TRUE;
   }
 

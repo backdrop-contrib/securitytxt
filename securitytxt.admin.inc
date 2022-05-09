@@ -87,6 +87,50 @@ function securitytxt_file_form() {
     '#description' => t('The URL of page which contains your public key. The page should be loaded over HTTPS.'),
   );
 
+  $form['acknowledgement'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Acknowledgements'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#description' => t('A security acknowldgements page should list the individuals or companies that have disclosed security vulnerabilities and worked with you to fix them.'),
+  );
+  $form['acknowledgement']['acknowledgement_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Acknowledgements page URL'),
+    '#default_value' => $config->get('acknowledgement_url'),
+    '#description' => t('The URL of your security acknowledgements page. Leave it blank if you do not have such a page.'),
+  );
+
+  $form['languages'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Preferred languages'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#description' => t('Select the languages which your security team speaks, you may select more than one language.'),
+  );
+  $form['languages']['preferred_languages'] = array(
+    '#type' => 'select',
+    '#title' => t('Preferred languages'),
+    '#multiple' => TRUE,
+    '#options' => _securitytxt_preferred_languages_options(),
+    '#default_value' => $config->get('preferred_languages'),
+    '#description' => t('Select zero or more languages. You can hold down your <kbd>Ctrl</kbd> key while clicking to select more than one language.'),
+  );
+
+  $form['canonical'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Canonical'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#description' => t('The URLs for accessing your security.txt file. It is important to include this if you are digitally signing the security.txt file, so that the location of the security.txt file can be digitally signed too.'),
+  );
+  $form['canonical']['canonical_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Canonical URL'),
+    '#default_value' => $config->get('canonical_url'),
+    '#description' => t('The default value should be correct. Only edit this if you know what you are doing.'),
+  );
+
   $form['policy'] = array(
     '#type' => 'fieldset',
     '#title' => t('Policy'),
@@ -101,18 +145,18 @@ function securitytxt_file_form() {
     '#description' => t('The URL of a page which provides details of your security and/or disclosure policy. Leave it blank if you do not have such a page.'),
   );
 
-  $form['acknowledgement'] = array(
+  $form['hiring'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Acknowledgement'),
+    '#title' => t('Hiring'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
-    '#description' => t('A security acknowldgements page should list the individuals or companies that have disclosed security vulnerabilities and worked with you to fix them.'),
+    '#description' => t('A link to any security-related job openings in your organisation.'),
   );
-  $form['acknowledgement']['acknowledgement_url'] = array(
+  $form['hiring']['hiring_url'] = array(
     '#type' => 'textfield',
-    '#title' => t('Acknowledgements page URL'),
-    '#default_value' => $config->get('acknowledgement_url'),
-    '#description' => t('The URL of your security acknowledgements page. Leave it blank if you do not have such a page.'),
+    '#title' => t('Hiring URL'),
+    '#default_value' => $config->get('hiring_url'),
+    '#description' => t('The URL of a page which provides details of any security-related job openings in your organisation. Leave it blank if you do not have such a page.'),
   );
 
   $form['submit'] = array(
@@ -135,8 +179,11 @@ function securitytxt_file_form_validate($form, &$form_state) {
   $contact_url = $form_state['values']['contact_url'];
   $expires_timestamp = _securitytxt_expires_timestamp($form_state);
   $encryption_key_url = $form_state['values']['encryption_key_url'];
-  $policy_url = $form_state['values']['policy_url'];
   $acknowledgement_url = $form_state['values']['acknowledgement_url'];
+  $preferred_languages = $form_state['values']['preferred_languages'];
+  $canonical_url = $form_state['values']['canonical_url'];
+  $policy_url = $form_state['values']['policy_url'];
+  $hiring_url = $form_state['values']['hiring_url'];
 
   if ($contact_email != '' && valid_email_address($contact_email) == FALSE) {
     form_set_error('contact_email', t('The contact email address in invalid.'));
@@ -167,12 +214,27 @@ function securitytxt_file_form_validate($form, &$form_state) {
     form_set_error('encryption_key_url', t('The encryption key URL is invalid, please ensure that it is an absolute URL.'));
   }
 
+  if ($acknowledgement_url != '' && valid_url($acknowledgement_url, TRUE) == FALSE) {
+    form_set_error('acknowledgement_url', t('The acknowledgement URL is invalid, please ensure that it is an absolute URL.'));
+  }
+
+  $lang_codes = array_keys(_securitytxt_preferred_languages_options());
+  foreach ($preferred_languages as $preferred_lang_code) {
+    if (!in_array($preferred_lang_code, $lang_codes)) {
+      form_set_error('preferred_languages', t('Your preferred language choice is invalid.'));
+    }
+  }
+
+  if ($canonical_url != '' && valid_url($canonical_url, TRUE) == FALSE) {
+    form_set_error('canonical_url', t('The canonical URL is invalid, please ensure that it is an absolute URL.'));
+  }
+
   if ($policy_url != '' && valid_url($policy_url, TRUE) == FALSE) {
     form_set_error('policy_url', t('The policy URL is invalid, please ensure that it is an absolute URL.'));
   }
 
-  if ($acknowledgement_url != '' && valid_url($acknowledgement_url, TRUE) == FALSE) {
-    form_set_error('acknowledgement_url', t('The acknowledgement URL is invalid, please ensure that it is an absolute URL.'));
+  if ($hiring_url != '' && valid_url($hiring_url, TRUE) == FALSE) {
+    form_set_error('hiring_url', t('The hiring URL is invalid, please ensure that it is an absolute URL.'));
   }
 }
 
@@ -190,8 +252,11 @@ function securitytxt_file_form_submit($form, &$form_state) {
   $config->set('expires_timestamp', $expires_timestamp);
   $config->set('contact_url', $form_state['values']['contact_url']);
   $config->set('encryption_key_url', $form_state['values']['encryption_key_url']);
-  $config->set('policy_url', $form_state['values']['policy_url']);
   $config->set('acknowledgement_url', $form_state['values']['acknowledgement_url']);
+  $config->set('preferred_languages', $form_state['values']['preferred_languages']);
+  $config->set('canonical_url', $form_state['values']['canonical_url']);
+  $config->set('policy_url', $form_state['values']['policy_url']);
+  $config->set('hiring_url', $form_state['values']['hiring_url']);
   $config->save();
 
   /* Warn if expires in more than 366 days into the future */
@@ -207,6 +272,11 @@ function securitytxt_file_form_submit($form, &$form_state) {
   /* Warn if encryption URL is not loaded over HTTPS */
   if ($form_state['values']['encryption_key_url'] != '' && substr($form_state['values']['encryption_key_url'], 0, 8) !== 'https://') {
     backdrop_set_message(t('Your public key URL should really be loaded over HTTPS.'), 'warning');
+  }
+
+  /* Warn if canonical URL is not default value */
+  if ($form_state['values']['canonical_url'] != _securitytxt_default_canonical_url()) {
+    backdrop_set_message(t('Your canonical URL is not the default value. This is unusual, only continue with this if you know what you are doing.'), 'warning');
   }
 
   /* Message the user to proceed to the sign page if they have enabled security.txt */
@@ -280,6 +350,22 @@ function securitytxt_sign_form_validate($form, &$form_state) {
  */
 function securitytxt_sign_form_submit($form, &$form_state) {
   config_set('securitytxt.settings', 'signature_text', $form_state['values']['signature_text']);
+}
+
+/**
+ * Options array for the preferred languages options.
+ */
+function _securitytxt_preferred_languages_options() {
+  include_once BACKDROP_ROOT . '/core/includes/standard.inc';
+
+  $standard_language_list = standard_language_list();
+  $options = array();
+
+  foreach ($standard_language_list as $key => $value) {
+    $options[$key] = $value[0];
+  }
+
+  return $options;
 }
 
 /**
