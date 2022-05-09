@@ -356,8 +356,8 @@ class SecuritytxtEnabledTest extends SecuritytxtBaseWebTestCase {
 
     if ($enabled) {
       $this->assertResponse(200);
-      $this->assertText('Contact: ' . $contact_email);
-      $this->assertText('Contact: ' . $contact_phone);
+      $this->assertText('Contact: mailto:' . $contact_email);
+      $this->assertText('Contact: tel:' . $contact_phone);
       $this->assertText('Contact: ' . $contact_url);
       $this->assertText('Encryption: ' . $encryption_key_url);
       $this->assertText('Policy: ' . $policy_url);

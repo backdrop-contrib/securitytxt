@@ -28,7 +28,7 @@ function securitytxt_file_page() {
 
   $contact_phone = $config->get('contact_phone');
   if ($contact_phone) {
-    $content .= 'Contact: ' . $contact_phone . "\n";
+    $content .= 'Contact: tel:' . $contact_phone . "\n";
   }
 
   $contact_url = $config->get('contact_url');

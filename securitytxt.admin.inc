@@ -40,7 +40,7 @@ function securitytxt_file_form() {
     '#type' => 'textfield',
     '#title' => t('Phone'),
     '#default_value' => $config->get('contact_phone'),
-    '#description' => t('Use the full international format like <kbd>+1-201-555-0123</kbd>. Leave it blank if you do not want to provide a phone number.'),
+    '#description' => t('Use the full international format like <kbd>+1-201-555-0123</kbd> or <kbd>+44-1632-123456;ext=123</kbd>. Whitespace characters will be converted to dashes. Leave it blank if you do not want to provide a phone number.'),
   );
   $form['contact']['contact_url'] = array(
     '#type' => 'textfield',
@@ -185,7 +185,7 @@ function securitytxt_file_form_submit($form, &$form_state) {
   $config = config('securitytxt.settings');
   $config->set('enabled', $form_state['values']['enabled']);
   $config->set('contact_email', $form_state['values']['contact_email']);
-  $config->set('contact_phone', $form_state['values']['contact_phone']);
+  $config->set('contact_phone', _securitytxt_canonicalize_phone($form_state['values']['contact_phone']));
   $expires_timestamp = _securitytxt_expires_timestamp($form_state);
   $config->set('expires_timestamp', $expires_timestamp);
   $config->set('contact_url', $form_state['values']['contact_url']);
@@ -298,11 +298,22 @@ function _securitytxt_expires_timestamp(&$form_state) {
  * Basic validator for telephone numbers.
  */
 function _securitytxt_valid_phone($phone) {
-  $pattern = '/^[ext,\d\s\-\+]{5,30}$/';
+  $pattern = '/^\+\d{1,3}[\s\-\d]{5,30}(;ext=[\d]{1,8})?$/';
 
   if (preg_match($pattern, $phone)) {
     return TRUE;
   }
 
   return FALSE;
+}
+
+/**
+ * Canonicalize a phone number.
+ *
+ * Replaces one or more whitespace characters with a hyphen.
+ */
+function _securitytxt_canonicalize_phone($phone) {
+  $whitespace_replaced = preg_replace('/\s+/', '-', $phone);
+  $hypens_deduplicated = preg_replace('/\-+/', '-', $whitespace_replaced);
+  return $hypens_deduplicated;
 }
