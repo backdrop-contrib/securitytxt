@@ -58,3 +58,32 @@ function _securitytxt_update_configuration() {
     $config->save();
   }
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * This will be run when updating from Drupal 7.
+ */
+function securitytxt_update_1000() {
+  // Get the drupal 7 variables.
+  $settings = update_variable_get('securitytxt');
+
+  // Load, update and save the Backdrop confiuration.
+  $config = config('securitytxt.settings');
+  $config->set('enabled', $settings['enabled']);
+  $config->set('contact_email', $settings['contact_email']);
+  $config->set('contact_phone', $settings['contact_phone']);
+  $config->set('contact_url', $settings['contact_url']);
+  $config->set('encryption_key_url', $settings['encryption_key_url']);
+  $config->set('policy_url', $settings['policy_url']);
+  $config->set('acknowledgement_url', $settings['acknowledgement_url']);
+  $config->save();
+
+  // Delete the old drupal 7 variables.
+  update_variable_del('securitytxt');
+
+  // Ensure that translations are available.
+  $t = get_t();
+
+  return $t('Please check and re-sign your security.txt file.');
+}
